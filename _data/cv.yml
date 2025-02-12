@@ -3,10 +3,11 @@
   contents:
     - title: Ph.D. in Computer Science
       institution: Aalto University, Finland
-      year: August 2022 - August 2026
+      year: 08/2022 - 08/2026
       description:
-        - Advised by <a href="https://www.mit.edu/~vgarg/>Vikas Garg</a>, <a href="https://users.aalto.fi/~heinom10/>Markus Heinonen</a>, and  <a href="https://kaski-lab.com/>Samuel Kaski</a>
+        - Advised by <a href="https://www.mit.edu/~vgarg/>Vikas Garg</a>, <a href="https://users.aalto.fi/~heinom10/>Markus Heinonen</a>, and  <a href="https://kaski-lab.com/>Samuel Kaski</a>.
         - Working primarily on generative models, with applications to drug design.
+
     - title: BSc and MSc in Mathematics
       institution: Warsaw University of Technology, Poland
       year: October 2012 - July 2017
@@ -19,41 +20,42 @@
   contents:
     - title: (Incoming) Research Scientist Intern
       institution: Meta, New York City
-      year: July 2025 - November 2025
+      year: 07/2025 - 11/2025
 
     - title: Visiting Ph.D. Student
       institution: Technical University of Denmark
-      year: February 2025 - April 2025
+      year: 02/2025 - 04/2025
       description:
         - Working with Søren Hauberg on the geometric view of diffusion models
 
     - title: Machine Learning Scientist
       institution: Amazon, Edinburgh, United Kingdom/Warsaw, Poland
-      year: January 2020 - July 2022
+      year: 01/2020 - 07/2022
       description:
         - HR team - explainable recommendations, neural topic models; fairness constraints,  optimal transport
         - text to speech team - speech synthesis; generative modelling; diffusion, score-based models
 
     - title: Senior Machine Learning Engineer
       institution: Sigmoidal, Warsaw, Poland
-      year: June 2017 - December 2019
+      year: 06/2017 - 12/2019
       description:
         - Projects included: Activity detection, object tracking, text classification, wake word detection, marketing budget optimization
 
     - title: Junior Data Scientist
       institution: FinAi, Warsaw, Poland
-      year: March 2017 - July 2017
+      year: 03/2017 - 07/2017
       description:
         - Natural language process and building data pipelines
 
     - title: Intern
       institution: PricewaterhouseCoopers, Warsaw, Poland
-      year: July 2016 - March 2017
+      year: 07/2016 - 03/2017
       description:
         - image segmentation, explainability of neural networks
     
     - title: Teaching Assistant
       institution: Warsaw University of Technology, Poland
+      year: 10/2015 - 02/2016
         - Calculus and linear algebra
 
 - title: Programming languages
