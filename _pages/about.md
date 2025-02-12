@@ -30,4 +30,4 @@ Click [here](https://rafalkarczewski.github.io/cv/) to see my full CV.
 
 My research interests include:
 * generative models: mainly flow-based and SDE models.
-* differential geometry in machine learning
+* differential geometry in machine learning.
