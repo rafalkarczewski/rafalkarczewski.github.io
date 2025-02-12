@@ -5,7 +5,7 @@
       institution: Aalto University, Finland
       year: 08/2022 - 08/2026
       description:
-        - Advised by <a href="https://www.mit.edu/~vgarg/">Vikas Garg</a>, <a href="https://users.aalto.fi/~heinom10"/>Markus Heinonen</a>, and  <a href="https://kaski-lab.com/">Samuel Kaski</a>.
+        - Advised by <a href="https://www.mit.edu/~vgarg/">Vikas Garg</a>, <a href="https://users.aalto.fi/~heinom10/">Markus Heinonen</a>, and  <a href="https://kaski-lab.com/">Samuel Kaski</a>.
         - Working primarily on generative models, with applications to drug design.
 
     - title: BSc and MSc in Mathematics
@@ -59,7 +59,7 @@
       description:
         - Calculus and linear algebra
 
-- title: Programming languages
+- title: Programming skills
   type: list
   contents:
     - Python, Pytorch, torchdiffeq, JAX, equinox, optax 
