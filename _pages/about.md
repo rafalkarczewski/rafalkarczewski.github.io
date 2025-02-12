@@ -6,7 +6,7 @@ subtitle: karczewski.rafal93 at gmail.com
 
 profile:
   align: right
-  image: prof_pic.jpg
+  image: profile-pic-bw.jpg
   image_circular: false # crops the image to make it circular
   more_info:
 
