@@ -5,12 +5,12 @@
       institution: Aalto University, Finland
       year: 08/2022 - 08/2026
       description:
-        - Advised by <a href="https://www.mit.edu/~vgarg/>Vikas Garg</a>, <a href="https://users.aalto.fi/~heinom10/>Markus Heinonen</a>, and  <a href="https://kaski-lab.com/>Samuel Kaski</a>.
+        - Advised by <a href="https://www.mit.edu/~vgarg/">Vikas Garg</a>, <a href="https://users.aalto.fi/~heinom10"/>Markus Heinonen</a>, and  <a href="https://kaski-lab.com/">Samuel Kaski</a>.
         - Working primarily on generative models, with applications to drug design.
 
     - title: BSc and MSc in Mathematics
       institution: Warsaw University of Technology, Poland
-      year: October 2012 - July 2017
+      year: 10/2012 - 07/2017
       description:
         - Summa cum laude
         - Scholarship for best students
@@ -39,7 +39,7 @@
       institution: Sigmoidal, Warsaw, Poland
       year: 06/2017 - 12/2019
       description:
-        - Projects included: Activity detection, object tracking, text classification, wake word detection, marketing budget optimization
+        - "Projects included: Activity detection, object tracking, text classification, wake word detection, marketing budget optimization"
 
     - title: Junior Data Scientist
       institution: FinAi, Warsaw, Poland
@@ -56,6 +56,7 @@
     - title: Teaching Assistant
       institution: Warsaw University of Technology, Poland
       year: 10/2015 - 02/2016
+      description:
         - Calculus and linear algebra
 
 - title: Programming languages
