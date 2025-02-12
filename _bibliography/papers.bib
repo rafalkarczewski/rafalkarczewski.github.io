@@ -35,6 +35,7 @@ year={2025},
 honor={Oral Presentation [Top 2\%]},
 url={https://openreview.net/forum?id=GHyBMTpiJg},
 pdf={https://arxiv.org/pdf/2408.06050},
+code={https://github.com/rafalkarczewski/SimpleSBDD},
 abstract={Several generative models with elaborate training and sampling procedures have been proposed recently to accelerate structure-based drug design (SBDD); however, perplexingly, their empirical performance turns out to be suboptimal. We seek to better understand this phenomenon from both theoretical and empirical perspectives. Since most of these models apply graph neural networks (GNNs), one may suspect that they inherit the representational limitations of GNNs. We analyze this aspect, establishing the first such results for protein-ligand complexes. A plausible counterview may attribute the underperformance of these models to their excessive parameterizations, inducing expressivity at the expense of generalization. We also investigate this possibility with a simple metric-aware approach that learns an economical surrogate for affinity to infer an unlabelled molecular graph and optimizes for labels conditioned on this graph and molecular properties. The resulting model achieves state-of-the-art results using 100x fewer trainable parameters and affords up to 1000x speedup. Collectively, our findings underscore the need to reassess and redirect the existing paradigm and efforts for SBDD.},
 selected=true
 }
@@ -47,6 +48,7 @@ booktitle={ICML},
 year={2024},
 url={https://openreview.net/forum?id=Yqj3DzIC79},
 pdf={https://openreview.net/pdf?id=Yqj3DzIC79},
+code={https://github.com/Aalto-QuML/GeneralizationEGNNs},
 abstract={E(n)-Equivariant Graph Neural Networks (EGNNs) are among the most widely used and successful models for representation learning on geometric graphs (e.g., 3D molecules). However, while the expressivity of EGNNs has been explored in terms of geometric variants of the Weisfeiler-Leman isomorphism test, characterizing their generalization capability remains open. In this work, we establish the first generalization bound for EGNNs. Our bound depicts a dependence on the weighted sum of logarithms of the spectral norms of the weight matrices (EGNN parameters). In addition, our main result reveals interesting novel insights: i) the spectral norms of the initial layers may impact generalization more than the final ones; ii) epsilon-normalization is beneficial to generalization --- confirming prior empirical evidence. We leverage these insights to introduce a spectral norm regularizer tailored to EGNNs. Experiments on real-world datasets substantiate our analysis, demonstrating a high correlation between theoretical and empirical generalization gaps and the effectiveness of the proposed regularization scheme.}
 }
 
