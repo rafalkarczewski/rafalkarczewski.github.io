@@ -30,16 +30,11 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/cv/";
           },
-        },{id: "news-a-simple-inline-announcement",
-          title: 'A simple inline announcement.',
+        },{id: "news-accepted-the-offer-from-meta-for-a-research-scientist-intern-this-summer",
+          title: 'Accepted the offer from Meta for a Research Scientist Intern this summer!',
           description: "",
-          section: "News",},{id: "news-a-long-announcement-with-details",
-          title: 'A long announcement with details',
-          description: "",
-          section: "News",handler: () => {
-              window.location.href = "/news/announcement_2/";
-            },},{id: "news-a-simple-inline-announcement-with-markdown-emoji-sparkles-smile",
-          title: 'A simple inline announcement with Markdown emoji! :sparkles: :smile:',
+          section: "News",},{id: "news-starting-my-research-visit-at-technical-university-of-denmark-i-will-be-working-with-søren-hauberg-on-geometric-view-of-diffusion-models",
+          title: 'Starting my research visit at Technical University of Denmark! I will be working...',
           description: "",
           section: "News",},{id: "projects-project-1",
           title: 'project 1',
