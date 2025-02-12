@@ -181,6 +181,12 @@
     <div class="periodical">
       {{ entry.note | strip }}
     </div>
+  
+    {%- if entry.honor -%}
+      <div class="honor">
+        {{ entry.honor | strip }}
+      </div>
+    {%- endif -%}
 
     <!-- Links/Buttons -->
     <div class="links">

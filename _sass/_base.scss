@@ -786,6 +786,11 @@ footer.sticky-bottom {
         }
       }
 
+      .honor{
+        font-weight: bolder;
+        color: var(--global-theme-color)
+      }
+
       .links {
         a.btn {
           color: var(--global-text-color);
