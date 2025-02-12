@@ -62,5 +62,5 @@
 - title: Programming skills
   type: list
   contents:
-    - Python, Pytorch, torchdiffeq, JAX, equinox, optax 
+    - Python, Pytorch, torchdiffeq, JAX, equinox, optax, diffrax
     - GIT
