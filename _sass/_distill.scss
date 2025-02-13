@@ -121,16 +121,15 @@ d-article {
         }
       }
     }
-    .figcaption {
-      line-height: 1.4em;
-      color: var(--global-distill-app-color) !important;
-    }
     toc-line {
       border-right: 1px solid var(--global-divider-color);
       grid-column: toc-line;
     }
   }
-
+  .figcaption {
+    line-height: 1.4em;
+    color: var(--global-distill-app-color) !important;
+  }
   d-footnote {
     scroll-margin-top: 66px;
     color: var(--global-text-color) !important;
