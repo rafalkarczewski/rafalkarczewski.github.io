@@ -17,8 +17,6 @@ document.addEventListener("DOMContentLoaded", function () {
     if (footnoteContainer) {
       // Inline styles approach
       footnoteContainer.style.backgroundColor = "var(--global-bg-color)";
-      footnoteContainer.style.border = "1px solid var(--global-divider-color)";
-      footnoteContainer.style.padding = "10px";
       footnoteContainer.style.borderRadius = "6px";
       footnoteContainer.style.color = "var(--global-text-color)";
 
