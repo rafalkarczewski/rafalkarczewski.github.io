@@ -10,19 +10,24 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
     // Style the hover box
-    const hoverBoxStyle = shadowRoot.querySelector("d-hover-box").shadowRoot.querySelector("style").sheet;
-    hoverBoxStyle.insertRule(
-      ".footnote-container {background-color: var(--global-bg-color) !important; border: 1px solid var(--global-divider-color) !important; padding: 10px; border-radius: 6px;}"
-    );
-    hoverBoxStyle.insertRule(
-      ".footnote-container p, .footnote-container span {color: var(--global-text-color) !important;}"
-    );
-    hoverBoxStyle.insertRule(
-      ".footnote-container a {color: var(--global-text-color) !important; text-decoration: none;}"
-    );
-    hoverBoxStyle.insertRule(
-      ".footnote-container a:hover {color: var(--global-theme-color) !important;}"
-    );
+    const hoverBox = shadowRoot.querySelector("d-hover-box");
+    if (hoverBox) {
+      const hoverBoxStyle = hoverBox.shadowRoot.querySelector("style").sheet;
+
+      // Style the footnote container specifically
+      hoverBoxStyle.insertRule(
+        ".footnote-container {background-color: var(--global-bg-color) !important; border: 1px solid var(--global-divider-color) !important; padding: 10px; border-radius: 6px;}"
+      );
+      hoverBoxStyle.insertRule(
+        ".footnote-container p, .footnote-container span {color: var(--global-text-color) !important;}"
+      );
+      hoverBoxStyle.insertRule(
+        ".footnote-container a {color: var(--global-text-color) !important; text-decoration: none;}"
+      );
+      hoverBoxStyle.insertRule(
+        ".footnote-container a:hover {color: var(--global-theme-color) !important;}"
+      );
+    }
   });
 
   // Style citations
@@ -36,18 +41,23 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
     // Style the hover box
-    const hoverBoxStyle = shadowRoot.querySelector("d-hover-box").shadowRoot.querySelector("style").sheet;
-    hoverBoxStyle.insertRule(
-      ".panel {background-color: var(--global-bg-color) !important; border-color: var(--global-divider-color) !important;}"
-    );
-    hoverBoxStyle.insertRule(
-      ".panel p, .panel span {color: var(--global-text-color) !important;}"
-    );
-    hoverBoxStyle.insertRule(
-      ".panel a {color: var(--global-text-color) !important; text-decoration: none;}"
-    );
-    hoverBoxStyle.insertRule(
-      ".panel a:hover {color: var(--global-theme-color) !important;}"
-    );
+    const hoverBox = shadowRoot.querySelector("d-hover-box");
+    if (hoverBox) {
+      const hoverBoxStyle = hoverBox.shadowRoot.querySelector("style").sheet;
+
+      // Style the panel specifically
+      hoverBoxStyle.insertRule(
+        ".panel {background-color: var(--global-bg-color) !important; border-color: var(--global-divider-color) !important; border-radius: 6px;}"
+      );
+      hoverBoxStyle.insertRule(
+        ".panel p, .panel span {color: var(--global-text-color) !important;}"
+      );
+      hoverBoxStyle.insertRule(
+        ".panel a {color: var(--global-text-color) !important; text-decoration: none;}"
+      );
+      hoverBoxStyle.insertRule(
+        ".panel a:hover {color: var(--global-theme-color) !important;}"
+      );
+    }
   });
 });
