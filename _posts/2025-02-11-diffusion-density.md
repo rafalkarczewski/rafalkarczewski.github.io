@@ -56,7 +56,7 @@ An interesting observation <citation> is that simply rescaling the latent code (
 
 #### Score Alignment
 
-Score alignment measures the angle between the score function at $$t = T$$ (the noise distribution) pushed forward via the flow to $$t = 0$$, and the score function at $$t = 0$$ (the data distribution). If the angle is always acute, scaling the latent code at $$t = T$$ changes $$\log p_0(\mathbf{x}_0)$$ in a monotonic way, explaining the relationship between scaling and image detail.<d-footnote> If the angle is always obtuse, the reverse relationship between $$\logp_T(\mathbf{x}_T)$$ and $$\logp_0(\mathbf{x}_0)$$ holds. </d-footnote> Remarkably, we show that this alignment can be measured without explicitly knowing the score function.
+Score alignment measures the angle between the score function at $$t = T$$ (the noise distribution) pushed forward via the flow to $$t = 0$$, and the score function at $$t = 0$$ (the data distribution). If the angle is always acute, scaling the latent code at $$t = T$$ changes $$\log p_0(\mathbf{x}_0)$$ in a monotonic way, explaining the relationship between scaling and image detail.<d-footnote> If the angle is always obtuse, the reverse relationship between $$\log p_T(\mathbf{x}_T)$$ and $$\log p_0(\mathbf{x}_0)$$ holds. </d-footnote> Remarkably, we show that this alignment can be measured without explicitly knowing the score function.
 
 ### Density Guidance: A Principled Approach to Controlling Log-Density
 
