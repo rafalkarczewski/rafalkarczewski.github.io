@@ -30,11 +30,11 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/cv/";
           },
-        },{id: "post-towards-understanding-likelihood-in-diffusion-models",
+        },{id: "post-understanding-likelihood-in-diffusion-models",
       
-        title: "Towards Understanding Likelihood in Diffusion Models",
+        title: "Understanding Likelihood in Diffusion Models",
       
-      description: "A summary of our two recent articles on how to estimate and control likelihood in diffusion models.",
+      description: "A summary of our two recent articles on estimating and controling likelihood in diffusion models.",
       section: "Posts",
       handler: () => {
         
