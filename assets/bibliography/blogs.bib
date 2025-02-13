@@ -1,0 +1,22 @@
+@article{karczewski2025devildetailsdensityguidance,
+      title={Devil is in the Details: Density Guidance for Detail-Aware Generation with Flow Models}, 
+      author={Rafał Karczewski and Markus Heinonen and Vikas Garg},
+      year={2025},
+      journal={arXiv},
+      url={https://arxiv.org/abs/2502.05807},
+      pdf={https://arxiv.org/pdf/2502.05807},
+      abstract={Diffusion models have emerged as a powerful class of generative models, capable of producing high-quality images by mapping noise to a data distribution. However, recent findings suggest that image likelihood does not align with perceptual quality: high-likelihood samples tend to be smooth, while lower-likelihood ones are more detailed. Controlling sample density is thus crucial for balancing realism and detail. In this paper, we analyze an existing technique, Prior Guidance, which scales the latent code to influence image detail. We introduce score alignment, a condition that explains why this method works and show that it can be tractably checked for any continuous normalizing flow model. We then propose Density Guidance, a principled modification of the generative ODE that enables exact log-density control during sampling. Finally, we extend Density Guidance to stochastic sampling, ensuring precise log-density control while allowing controlled variation in structure or fine details. Our experiments demonstrate that these techniques provide fine-grained control over image detail without compromising sample quality. },
+      selected=true
+}
+
+@inproceedings{
+karczewski2025diffusion,
+title={Diffusion Models as Cartoonists! The Curious Case of High Density Regions},
+author={Rafał Karczewski and Markus Heinonen and Vikas Garg},
+booktitle={ICLR},
+year={2025},
+url={https://openreview.net/forum?id=RiS2cxpENN},
+abstract={We investigate what kind of images lie in the high-density regions of diffusion models. We introduce a theoretical mode-tracking process capable of pinpointing the exact mode of the denoising distribution, and we propose a practical high-probability sampler that consistently generates images of higher likelihood than usual samplers. Our empirical findings reveal the existence of significantly higher likelihood samples that typical samplers do not produce, often manifesting as cartoon-like drawings or blurry images depending on the noise level. Curiously, these patterns emerge in datasets devoid of such examples. We also present a novel approach to track sample likelihoods in diffusion SDEs, which remarkably incurs no additional computational cost. },
+pdf={https://arxiv.org/pdf/2411.01293},
+selected=true
+}
