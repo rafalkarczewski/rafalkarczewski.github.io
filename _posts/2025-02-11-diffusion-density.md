@@ -1,12 +1,11 @@
 ---
 layout: post
 title: Understanding, Estimating, and Controlling Log-Density in Diffusion Models
-date: 2025-02-13 10:25:00
+date: 2025-02-11 10:25:00
 description: Understanding, Estimating, and Controlling Log-Density in Diffusion Models
 bibliography: blogs.bib
 tags: diffusion
 categories: sample-posts
-featured: true
 ---
 
 # Understanding, Estimating, and Controlling Log-Density in Diffusion Models
