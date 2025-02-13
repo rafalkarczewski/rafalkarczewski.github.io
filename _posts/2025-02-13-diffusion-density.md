@@ -12,7 +12,7 @@ categories: sample-posts
 
 ## What is Log-Density?
 
-Log-density, or the log-likelihood of a sample under a generative model, often serves as a proxy for how "typical" or "in-distribution" a sample is. Since diffusion models are likelihood-based models, they aim to assign high likelihood to training data and, by extension, low likelihood to out-of-distribution (OOD) data. Intuitively, one might think that log-density is a reliable measure of whether a sample lies in or out of the data distribution.
+Log-density, or the log-likelihood of a sample under a generative model, often serves as a proxy for how "typical" or "in-distribution" a sample is. Since diffusion models are likelihood-based models<citation>, they aim to assign high likelihood to training data and, by extension, low likelihood to out-of-distribution (OOD) data. Intuitively, one might think that log-density is a reliable measure of whether a sample lies in or out of the data distribution.
 
 However, prior research <citation> has shown that generative models can sometimes assign higher likelihoods to OOD data than to in-distribution data. In <d-cite key="karczewski2025diffusion"></d-cite>, we show that diffusion models are no different. In fact, we push this analysis further by exploring the highest-density regions of diffusion models.
 
@@ -51,11 +51,11 @@ One can see that since stochastic trajectories are a strict generalization of de
 
 Our findings show that log-density in image models correlates strongly with the amount of detail in the image. Higher likelihood samples tend to exhibit fewer details, often appearing smooth or even cartoon-like. Conversely, lower likelihood samples are richer in detail, capturing complex textures and structures.
 
-An interesting observation <citation> is that simply rescaling the latent code (e.g., scaling the noise at the start of the sampling process) changes the amount of detail in the generated image. In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we provide a theoretical explanation for this phenomenon using a concept we call **Score Alignment**. 
+An interesting observation <citation> is that simply rescaling the latent code (e.g., scaling the noise at the start of the sampling process) changes the amount of detail in the generated image. In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we provide a theoretical explanation for this phenomenon using a concept we call Score Alignment, which directly ties the scaling of the latent code to changes in log-density.
 
 #### Score Alignment
 
-Score alignment measures the angle between the score function at \(t = T\) (the noise distribution) and the score function at \(t = 0\) (the data distribution). If the angle is always acute, scaling the latent code at \(t = T\) changes \(\log p_0(x_0)\) in a monotonic way, explaining the relationship between scaling and image detail.<d-footnote> If the angle is always obtuse, the reverse relationship between logpT and logp0 holds. </d-footnote> Remarkably, we show that this alignment can be measured without explicitly knowing the score function for all intermediate timesteps.
+Score alignment measures the angle between the score function at \(t = T\) (the noise distribution) pushed forward via the flow to \(t = 0\), and the score function at \(t = 0\) (the data distribution). If the angle is always acute, scaling the latent code at \(t = T\) changes \(\log p_0(x_0)\) in a monotonic way, explaining the relationship between scaling and image detail.<d-footnote> If the angle is always obtuse, the reverse relationship between logpT and logp0 holds. </d-footnote> Remarkably, we show that this alignment can be measured without explicitly knowing the score function.
 
 ### Density Guidance: A Principled Approach to Controlling Log-Density
 
