@@ -1,8 +1,8 @@
 ---
 layout: distill
-title: Towards Understanding Likelihood in Diffusion Models
+title: Understanding Likelihood in Diffusion Models
 date: 2025-02-11 10:25:00
-description: A summary of our two recent articles on how to estimate and control likelihood in diffusion models.
+description: A summary of our two recent articles on estimating and controling likelihood in diffusion models.
 bibliography: blogs.bib
 related_publications: true
 hidden: true
