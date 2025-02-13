@@ -38,8 +38,8 @@ We summarize these in the table below:
 
 | Sampling Mode     | Original Dynamics       | Any Dynamics       |
 |--------------------|-------------------------|--------------------------|
-| **Deterministic** | Known from prior work <d-cite key="chen2018neural"></d-cite>  | Introduced in <d-cite key="karczewski2025diffusion"></d-cite>     |
-| **Stochastic**    | Introduced in <d-cite key="karczewski2025diffusion"></d-cite>    | Introduced in <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>     |
+| **Deterministic** | Prior work <d-cite key="chen2018neural"></d-cite>  | Ours <d-cite key="karczewski2025diffusion"></d-cite>     |
+| **Stochastic**    | Ours <d-cite key="karczewski2025diffusion"></d-cite>    | Ours <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>     |
 
 Previously, log-density was only measurable for deterministic sampling with original dynamics. In <d-cite key="karczewski2025diffusion"></d-cite>, we extend this to deterministic sampling under modified dynamics and stochastic sampling under original dynamics.<d-footnote> Interestingly, we show in <d-cite key="karczewski2025diffusion"></d-cite> that once the true score function is replaced with the approximate one, the log-density estimate becomes biased. We derive the exact formula for this bias and show that it goes to zero when the score function estimation error does.</d-footnote>
 In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we further generalize this to stochastic sampling with modified dynamics, deriving the evolution of log-density using the general **Itô's Lemma** and the **Fokker-Planck equation**.
