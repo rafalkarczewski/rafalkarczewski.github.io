@@ -30,11 +30,11 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/cv/";
           },
-        },{id: "post-understanding-estimating-and-controlling-log-density-in-diffusion-models",
+        },{id: "post-towards-understanding-likelihood-in-diffusion-models",
       
-        title: "Understanding, Estimating, and Controlling Log-Density in Diffusion Models",
+        title: "Towards Understanding Likelihood in Diffusion Models",
       
-      description: "Understanding, Estimating, and Controlling Log-Density in Diffusion Models",
+      description: "A summary of our two recent articles on how to estimate and control likelihood in diffusion models.",
       section: "Posts",
       handler: () => {
         
