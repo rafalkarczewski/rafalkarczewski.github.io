@@ -22,8 +22,6 @@ Using a theoretical **mode-tracking ODE**, we investigate the regions of the dat
 <figcaption style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Likelihood measures the amount of detail in an image. </figcaption>
 </div>
 
----
-
 ## How to Measure Log-Density?
 
 To measure log-density in diffusion models, it’s important to understand different modes of sampling. Broadly, sampling in diffusion models can be categorized into two dimensions:
@@ -63,7 +61,7 @@ Score alignment measures the angle between the score function at $$t = T$$ (the 
 
 While latent code scaling provides a heuristic way to control image detail, it lacks precision. In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we introduce **Density Guidance**, a principled modification of the generative ODE that allows precise control over the evolution of log-density during sampling.
 
-The key idea is to design dynamics such that:
+The key idea is to design dynamics of $$\mathbf{x}_t$$ such that:
 
 $$
 \frac{d \log p_t(\mathbf{x}_t)}{d t} = b_t(\mathbf{x}_t),
@@ -79,7 +77,7 @@ $$
 h_t(\mathbf{x}) = \frac{\sigma_t^2 \left(\Delta \log p_t(\mathbf{x}) + \|\nabla \log p_t(\mathbf{x})\|^2\right)}{\sqrt{2D}}
 $$
 
-is approximately $$\mathcal{N}(0, 1)$$ for high-dimensional data. This helps determine the "typical" range of log-density changes.
+is approximately $$\mathcal{N}(0, 1)$$ for $\mathbf{x} \sim p_t$$, where the data dimension $$D$$ is high. This helps determine the "typical" range of log-density changes.
 
 ### Stochastic Sampling with Density Guidance
 
@@ -90,8 +88,6 @@ This is particularly useful for balancing detail and variability in generated sa
 - Adding noise later affects only low-level details like texture.
 
 Our method ensures that the log-density evolution remains consistent with the deterministic case, allowing precise control while injecting controlled randomness.
-
----
 
 ## Conclusion
 
