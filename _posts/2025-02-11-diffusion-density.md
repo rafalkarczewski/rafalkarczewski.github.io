@@ -53,7 +53,7 @@ One can see that since stochastic trajectories are a strict generalization of de
 
 Our findings show that log-density in image models correlates strongly with the amount of detail in the image. Higher likelihood samples tend to exhibit fewer details, often appearing smooth or even cartoon-like. Conversely, lower likelihood samples are richer in detail, capturing complex textures and structures.
 
-An interesting observation <d-cite key="song2020score"></d-cite> is that simply rescaling the latent code (e.g., scaling the noise at the start of the sampling process) changes the amount of detail in the generated image. In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we provide a theoretical explanation for this phenomenon using a concept we call Score Alignment, which directly ties the scaling of the latent code to changes in log-density.
+An interesting observation <d-cite key="song2021scorebased"></d-cite> is that simply rescaling the latent code (e.g., scaling the noise at the start of the sampling process) changes the amount of detail in the generated image. In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we provide a theoretical explanation for this phenomenon using a concept we call Score Alignment, which directly ties the scaling of the latent code to changes in log-density.
 
 #### Score Alignment
 
