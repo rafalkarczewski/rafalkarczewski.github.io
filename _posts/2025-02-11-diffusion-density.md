@@ -77,7 +77,7 @@ $$
 h_t(\mathbf{x}) = \frac{\sigma_t^2 \left(\Delta \log p_t(\mathbf{x}) + \|\nabla \log p_t(\mathbf{x})\|^2\right)}{\sqrt{2D}}
 $$
 
-is approximately $$\mathcal{N}(0, 1)$$ for $\mathbf{x} \sim p_t$$, where the data dimension $$D$$ is high. This helps determine the "typical" range of log-density changes.
+is approximately $$\mathcal{N}(0, 1)$$ for $$\mathbf{x} \sim p_t$$, where the data dimension $$D$$ is high. This helps determine the "typical" range of log-density changes.
 
 ### Stochastic Sampling with Density Guidance
 
