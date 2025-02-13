@@ -6,6 +6,7 @@ description: Understanding, Estimating, and Controlling Log-Density in Diffusion
 bibliography: blogs.bib
 tags: diffusion
 categories: sample-posts
+featured: true
 ---
 
 # Understanding, Estimating, and Controlling Log-Density in Diffusion Models
