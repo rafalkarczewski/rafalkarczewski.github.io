@@ -131,18 +131,23 @@ d-article {
   }
 
   d-cite {
-    color: var(--global-theme-color) !important;
-    &:hover {
-      color: var(--global-hover-color) !important;
-    }
+    color: var(--global-hover-color) !important;
+    // &:hover {
+    //   color: var(--global-hover-color) !important;
+    // }
   }
 
   d-footnote {
     scroll-margin-top: 66px;
+    color: var(--global-hover-color) !important;
+    // &:hover {
+    //   color: var(--global-hover-color) !important;
+    // }
+  }
+
+  d-hover-box {
+    background-color: var(--global-code-bg-color) !important;
     color: var(--global-text-color) !important;
-    &:hover {
-      color: var(--global-hover-color) !important;
-    }
   }
 
 }
