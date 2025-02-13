@@ -1,29 +1,32 @@
 ---
 layout: distill
-title: Understanding, Estimating, and Controlling Log-Density in Diffusion Models
+title: Towards Understanding Likelihood in Diffusion Models
 date: 2025-02-11 10:25:00
-description: Understanding, Estimating, and Controlling Log-Density in Diffusion Models
+description: A summary of our two recent articles on how to estimate and control likelihood in diffusion models.
 bibliography: blogs.bib
 related_publications: true
 hidden: true
 pretty_table: true
 ---
 
-# Understanding, Estimating, and Controlling Log-Density in Diffusion Models
-
 ## What is Log-Density?
 
-Log-density, or the log-likelihood of a sample under a generative model, often serves as a proxy for how "typical" or "in-distribution" a sample is. Since diffusion models are likelihood-based models<citation>, they aim to assign high likelihood to training data and, by extension, low likelihood to out-of-distribution (OOD) data. Intuitively, one might think that log-density is a reliable measure of whether a sample lies in or out of the data distribution.
+Log-density, or the log-likelihood of a sample under a generative model, often serves as a proxy for how "typical" or "in-distribution" a sample is. Since diffusion models are likelihood-based models <d-cite key="song2021maximum,kingma2024understanding"></d-cite>, they aim to assign high likelihood to training data and, by extension, low likelihood to out-of-distribution (OOD) data. Intuitively, one might think that log-density is a reliable measure of whether a sample lies in or out of the data distribution.
 
-However, prior research <citation> has shown that generative models can sometimes assign higher likelihoods to OOD data than to in-distribution data. In <d-cite key="karczewski2025diffusion"></d-cite>, we show that diffusion models are no different. In fact, we push this analysis further by exploring the highest-density regions of diffusion models.
+However, prior research <d-cite key="choi2018waic,nalisnick2018deep,nalisnick2019detecting,ben2024d"></d-cite> has shown that generative models can sometimes assign higher likelihoods to OOD data than to in-distribution data. In <d-cite key="karczewski2025diffusion"></d-cite>, we show that diffusion models are no different. In fact, we push this analysis further by exploring the highest-density regions of diffusion models.
 
-Using a theoretical **mode-tracking ODE**, we investigate the regions of the data space where the model assigns the highest likelihood. Surprisingly, these regions are often occupied by cartoon-like drawings or blurry images—patterns that are absent from the training data. Additionally, we observe a strong correlation between negative log-density and PNG image size, revealing that negative log-likelihood for image data is essentially a measure of **information content** or **detail**, rather than "in-distribution-ness".
+Using a theoretical **mode-tracking ODE**, we investigate the regions of the data space where the model assigns the highest likelihood. Surprisingly, these regions are occupied by cartoon-like drawings or blurry images—patterns that are absent from the training data. Additionally, we observe a strong correlation between negative log-density and PNG image size, revealing that negative log-likelihood for image data is essentially a measure of **information content** or **detail**, rather than "in-distribution-ness".
+
+<div class='l-body'>
+<img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/density-guidance/cats-logp.jpg">
+<figcaption style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Likelihood measures the amount of detail in an image. </figcaption>
+</div>
 
 ---
 
 ## How to Measure Log-Density?
 
-To measure log-density in diffusion models, it’s important to understand the modes of sampling available. Broadly, sampling in diffusion models can be categorized into two dimensions:
+To measure log-density in diffusion models, it’s important to understand different modes of sampling. Broadly, sampling in diffusion models can be categorized into two dimensions:
 
 1. **Deterministic vs Stochastic Sampling**:
    - Deterministic sampling uses the **probability flow ODE**, following a smooth trajectory.
@@ -33,7 +36,7 @@ To measure log-density in diffusion models, it’s important to understand the m
    - Sampling can follow the original dynamics dictated by PF-ODE or Rev-SDE.
    - Alternatively, one can modify the dynamics to control specific properties, such as the log-density trajectory.
 
-We propose a **quadrant framework** to organize these methods, as shown below:
+We summarize these in the table below:
 
 | Sampling Mode     | Original Dynamics       | Any Dynamics       |
 |--------------------|-------------------------|--------------------------|
@@ -44,15 +47,13 @@ Previously, log-density was only measurable for deterministic sampling with orig
 In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we further generalize this to stochastic sampling with modified dynamics, deriving the evolution of log-density using the general **Itô's Lemma** and the **Fokker-Planck equation**.
 One can see that since stochastic trajectories are a strict generalization of determinic ones (vanishing diffusion term), the method for log-density estimation for any stochastic trajectory is a strict generalization of all the other ones.
 
----
-
 ## How to Control Log-Density?
 
 ### Understanding the Connection Between Log-Density and Image Detail
 
 Our findings show that log-density in image models correlates strongly with the amount of detail in the image. Higher likelihood samples tend to exhibit fewer details, often appearing smooth or even cartoon-like. Conversely, lower likelihood samples are richer in detail, capturing complex textures and structures.
 
-An interesting observation <citation> is that simply rescaling the latent code (e.g., scaling the noise at the start of the sampling process) changes the amount of detail in the generated image. In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we provide a theoretical explanation for this phenomenon using a concept we call Score Alignment, which directly ties the scaling of the latent code to changes in log-density.
+An interesting observation <d-cite key="song2021scorebased"></d-cite> is that simply rescaling the latent code (e.g., scaling the noise at the start of the sampling process) changes the amount of detail in the generated image. In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we provide a theoretical explanation for this phenomenon using a concept we call Score Alignment, which directly ties the scaling of the latent code to changes in log-density.
 
 #### Score Alignment
 
