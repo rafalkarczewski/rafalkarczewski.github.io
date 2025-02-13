@@ -12,19 +12,23 @@ document.addEventListener("DOMContentLoaded", function () {
     // Style the hover box
     const hoverBox = shadowRoot.querySelector("d-hover-box");
     if (hoverBox) {
-      const hoverBoxStyle = hoverBox.shadowRoot.querySelector("style").sheet;
+      const hoverBoxShadow = hoverBox.shadowRoot.querySelector("style").sheet;
 
-      // Style the footnote container specifically
-      hoverBoxStyle.insertRule(
+      // Ensure the footnote container has the correct styles
+      hoverBoxShadow.insertRule(
         ".footnote-container {background-color: var(--global-bg-color) !important; border: 1px solid var(--global-divider-color) !important; padding: 10px; border-radius: 6px;}"
       );
-      hoverBoxStyle.insertRule(
+
+      // Ensure text within the container uses the correct styles
+      hoverBoxShadow.insertRule(
         ".footnote-container p, .footnote-container span {color: var(--global-text-color) !important;}"
       );
-      hoverBoxStyle.insertRule(
+
+      // Ensure links within the container are styled correctly
+      hoverBoxShadow.insertRule(
         ".footnote-container a {color: var(--global-text-color) !important; text-decoration: none;}"
       );
-      hoverBoxStyle.insertRule(
+      hoverBoxShadow.insertRule(
         ".footnote-container a:hover {color: var(--global-theme-color) !important;}"
       );
     }
@@ -43,19 +47,18 @@ document.addEventListener("DOMContentLoaded", function () {
     // Style the hover box
     const hoverBox = shadowRoot.querySelector("d-hover-box");
     if (hoverBox) {
-      const hoverBoxStyle = hoverBox.shadowRoot.querySelector("style").sheet;
+      const hoverBoxShadow = hoverBox.shadowRoot.querySelector("style").sheet;
 
-      // Style the panel specifically
-      hoverBoxStyle.insertRule(
+      hoverBoxShadow.insertRule(
         ".panel {background-color: var(--global-bg-color) !important; border-color: var(--global-divider-color) !important; border-radius: 6px;}"
       );
-      hoverBoxStyle.insertRule(
+      hoverBoxShadow.insertRule(
         ".panel p, .panel span {color: var(--global-text-color) !important;}"
       );
-      hoverBoxStyle.insertRule(
+      hoverBoxShadow.insertRule(
         ".panel a {color: var(--global-text-color) !important; text-decoration: none;}"
       );
-      hoverBoxStyle.insertRule(
+      hoverBoxShadow.insertRule(
         ".panel a:hover {color: var(--global-theme-color) !important;}"
       );
     }
