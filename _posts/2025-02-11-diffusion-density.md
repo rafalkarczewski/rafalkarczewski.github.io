@@ -19,7 +19,7 @@ Using a theoretical **mode-tracking ODE**, we investigate the regions of the dat
 
 <div class='l-body'>
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/density-guidance/cats_logp.jpg">
-<figcaption style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Likelihood measures the amount of detail in an image. </figcaption>
+<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Likelihood measures the amount of detail in an image. </figcaption>
 </div>
 
 ## How to Measure Log-Density?
