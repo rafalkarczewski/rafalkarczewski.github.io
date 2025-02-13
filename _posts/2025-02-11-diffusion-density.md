@@ -6,6 +6,7 @@ description: Understanding, Estimating, and Controlling Log-Density in Diffusion
 bibliography: blogs.bib
 related_publications: true
 hidden: true
+pretty_table: true
 ---
 
 # Understanding, Estimating, and Controlling Log-Density in Diffusion Models
@@ -55,7 +56,7 @@ An interesting observation <citation> is that simply rescaling the latent code (
 
 #### Score Alignment
 
-Score alignment measures the angle between the score function at \(t = T\) (the noise distribution) pushed forward via the flow to \(t = 0\), and the score function at \(t = 0\) (the data distribution). If the angle is always acute, scaling the latent code at \(t = T\) changes \(\log p_0(x_0)\) in a monotonic way, explaining the relationship between scaling and image detail.<d-footnote> If the angle is always obtuse, the reverse relationship between logpT and logp0 holds. </d-footnote> Remarkably, we show that this alignment can be measured without explicitly knowing the score function.
+Score alignment measures the angle between the score function at $$t = T$$ (the noise distribution) pushed forward via the flow to $$t = 0$$, and the score function at $$t = 0$$ (the data distribution). If the angle is always acute, scaling the latent code at $$t = T$$ changes $$\log p_0(\mathbf{x}_0)$$ in a monotonic way, explaining the relationship between scaling and image detail.<d-footnote> If the angle is always obtuse, the reverse relationship between $$\logp_T(\mathbf{x}_T)$$ and $$\logp_0(\mathbf{x}_0)$$ holds. </d-footnote> Remarkably, we show that this alignment can be measured without explicitly knowing the score function.
 
 ### Density Guidance: A Principled Approach to Controlling Log-Density
 
@@ -64,17 +65,17 @@ While latent code scaling provides a heuristic way to control image detail, it l
 The key idea is to design dynamics such that:
 
 $$
-\frac{\mathrm{d} \log p_t(x_t)}{\mathrm{d} t} = b_t(x_t),
+\frac{d \log p_t(\mathbf{x}_t)}{d t} = b_t(\mathbf{x}_t),
 $$
 
-where \(b_t\) is a predefined function specifying how the log-density should evolve. Our method minimizes deviations from the original sampling trajectory while ensuring the desired log-density changes. Empirically, this produces results similar to latent code scaling but with far greater flexibility and control.
+where $$b_t$$ is a predefined function specifying how the log-density should evolve. Our method minimizes deviations from the original sampling trajectory while ensuring the desired log-density changes. Empirically, this produces results similar to latent code scaling but with far greater flexibility and control.
 
 #### Choosing Dynamics
 
 While density guidance theoretically allows arbitrary changes to log-density, practical constraints must be considered. Log-density changes that are too large or too small can lead to samples falling outside the typical regions of the data distribution. To address this, we leverage an observation that the following term:
 
 $$
-h(x) = \frac{\sigma_t^2 (\Delta \log p_t(x_t)) + \|\nabla \log p_t(x_t)\|^2}{\sqrt{2D}}
+h_t(\mathbf{x}) = \frac{\sigma_t^2 \left(\Delta \log p_t(\mathbf{x}) + \|\nabla \log p_t(\mathbf{x})\|^2\right)}{\sqrt{2D}}
 $$
 
 is approximately $$\mathcal{N}(0, 1)$$ for high-dimensional data. This helps determine the "typical" range of log-density changes.
