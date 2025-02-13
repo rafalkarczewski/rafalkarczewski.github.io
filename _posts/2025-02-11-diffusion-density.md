@@ -55,11 +55,11 @@ An interesting observation <d-cite key="song2021scorebased"></d-cite> is that si
 
 #### Score Alignment
 
-Score alignment measures the angle between the score function at $$t = T$$ (the noise distribution) pushed forward via the flow to $$t = 0$$, and the score function at $$t = 0$$ (the data distribution). If the angle is always acute, scaling the latent code at $$t = T$$ changes $$\log p_0(\mathbf{x}_0)$$ in a monotonic way, explaining the relationship between scaling and image detail.<d-footnote> If the angle is always obtuse, the reverse relationship between $$\log p_T(\mathbf{x}_T)$$ and $$\log p_0(\mathbf{x}_0)$$ holds. </d-footnote> Remarkably, we show that this alignment can be measured without explicitly knowing the score function, see <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite> for the proof and JAX code.
+Score alignment measures the angle between the score function at $$t = T$$ (the noise distribution) pushed forward via the flow to $$t = 0$$, and the score function at $$t = 0$$ (the data distribution). If the angle is always acute, scaling the latent code at $$t = T$$ changes $$\log p_0(\mathbf{x}_0)$$ in a monotonic way, explaining the relationship between scaling and image detail.<d-footnote> If the angle is always obtuse, scaling has a reverse effect. </d-footnote> Remarkably, we show that this alignment can be measured without explicitly knowing the score function, see <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite> for the proof and JAX code.
 
 <div class='l-body'>
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/density-guidance/sa_vis.png">
-<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Score Alignment is a condition that guarantees monotonic impact of scaling $$\mathbf{x}_T$$ on $$\log p_0(\mathbf{x}_0)$$. It is tractable to verify in practice, even without knowing the score function. Empirically we verify that it almost always holds for diffusion models on image data. </figcaption>
+<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Score Alignment is a condition that guarantees monotonic impact of scaling the latent code on the log-density of the decoded sample. It is tractable to verify in practice, even without knowing the score function. Empirically we verify that it almost always holds for diffusion models on image data. </figcaption>
 </div>
 
 ### Density Guidance: A Principled Approach to Controlling Log-Density
