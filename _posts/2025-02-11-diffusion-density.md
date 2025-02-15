@@ -46,7 +46,7 @@ For high-dimensional data, this volume term dominates the behavior of probabilit
 
 #### Gaussian Example: High Density but Low Probability at the Origin
 
-In the Gaussian case, consider the volume of a ball of radius $$ r $$ in $$D $$-dimensional space. This volume is proportional to $$ r^D $$, whilst the density at any point $$ \mathbf{x} $$ is proportional to $$\exp(-\|x\|^2 / 2) $$.
+In the Gaussian case, consider the volume of a ball of radius $$ r $$ in $$D $$-dimensional space. This volume is proportional to $$ r^D $$, whilst the density at any point $$ \mathbf{x} $$ is proportional to $$\exp(-\|\mathbf{x}\|^2 / 2) $$.
 
 If we compute the probability of a thin spherical shell at radius $$ r $$ and thickness $$ dr $$, the volume of this shell is proportional to $$ D  r^{D-1}dr $$, and the probability is given by:
 
@@ -54,7 +54,7 @@ $$
 P(\text{shell at } r) \propto D \cdot r^{D-1} \exp(-r^2 / 2)dr.
 $$
 
-The key insight is that this probability is maximized not at $$ r = 0 $$ (the origin, where density is highest), but at $$ r \approx \sqrt{D} $$. The typical region is thus the one, where neither the volume nor the density vanishes.
+The key insight is that this probability is maximized not at $$ r = 0 $$ (the origin, where density is highest), but at $$ r = \sqrt{D-1} $$. The typical region is thus the one, where neither the volume nor the density vanishes.
 
 #### Diffusion Models: High-Density Blurry Images vs. High-Volume Detailed Images
 
