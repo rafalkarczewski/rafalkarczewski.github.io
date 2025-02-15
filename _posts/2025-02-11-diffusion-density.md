@@ -22,6 +22,56 @@ Using a theoretical **mode-tracking ODE**, we investigate the regions of the dat
 <figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Likelihood measures the amount of detail in an image. </figcaption>
 </div>
 
+### Why Does This Happen?
+
+The observation that blurry images or cartoon-like drawings have the highest density in diffusion models may seem counterintuitive. Does this imply that the model considers these images to be the "most likely"? To understand this phenomenon, it is crucial to distinguish between **probability density** and **probability**.
+
+#### Probability Density vs. Probability
+
+A helpful analogy is the standard normal Gaussian distribution in high dimensions. In this distribution, the point with the highest density is the origin (zero vector), where all the coordinates are exactly zero. However, we know that the origin is actually far from the "typical region" of the distribution. Most samples from a high-dimensional Gaussian are not concentrated near the origin but instead fall in a shell or spherical region at a certain distance from it.
+
+This discrepancy arises because, in high-dimensional spaces, the relationship between probability and probability density is non-trivial. Specifically, the probability of being in a region $$ A $$ is determined by the integral of the density over that region:
+
+$$
+P(A) = \int_{A} p(x) dx.
+$$
+
+If the density is constant within $$ A $$, then the probability is proportional to the product of the density and the volume of $$A $$: 
+
+$$
+P(A) = c \cdot \text{Vol}(A).
+$$
+
+For high-dimensional data, this volume term dominates the behavior of probabilities.
+
+#### Gaussian Example: High Density but Low Probability at the Origin
+
+In the Gaussian case, consider the volume of a ball of radius $$ r $$ in $$D $$-dimensional space. This volume is proportional to $$ r^D $$, whilst the density at any point $$ \mathbf{x} $$ is proportional to $$\exp(-\|x\|^2 / 2) $$.
+
+If we compute the probability of a thin spherical shell at radius $$ r $$ and thickness $$ dr $$, the volume of this shell is proportional to $$ D  r^{D-1}dr $$, and the probability is given by:
+
+$$
+P(\text{shell at } r) \propto D \cdot r^{D-1} \exp(-r^2 / 2)dr.
+$$
+
+The key insight is that this probability is maximized not at $$ r = 0 $$ (the origin, where density is highest), but at $$ r \approx \sqrt{D} $$. The typical region is thus the one, where neither the volume nor the density vanishes.
+
+#### Diffusion Models: High-Density Blurry Images vs. High-Volume Detailed Images
+
+A similar principle applies to diffusion models. Although blurry or cartoon-like images occupy regions of high density, the "volume" of such images—i.e., the diversity of possible variations—is much smaller compared to the volume of regions corresponding to detailed, textured images. As a result, the **probability of sampling a blurry image is negligibly small**. 
+
+<!-- ---
+
+<div class='l-body'>
+<img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/density-guidance/gaussian_vs_diffusion.jpg">
+<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Left: In a high-dimensional Gaussian, the highest density occurs at the origin, but the probability mass concentrates in a spherical shell. Right: Similarly, in diffusion models, blurry or cartoon-like images correspond to high-density regions, while detailed images lie in high-probability regions due to their larger volume. </figcaption>
+</div>
+
+--- -->
+
+This distinction between density and probability helps explain why diffusion models assign lower log-densities to more detailed images. These images, despite their lower density, are much more likely to be sampled because they occupy a vastly larger region of the data space. This insight also highlights why log-density, in the context of diffusion models, correlates with the amount of detail or information in an image.
+
+
 ## How to Measure Log-Density?
 
 To measure log-density in diffusion models, it’s important to understand different modes of sampling. Broadly, sampling in diffusion models can be categorized into two dimensions:
@@ -78,7 +128,7 @@ $$
 \tilde{\mathbf{u}}_t(\mathbf{x})=\mathbf{u}_t(\mathbf{x}) + \underbrace{\frac{\operatorname{div}\mathbf{u}_t(\mathbf{x}) + b_t(\mathbf{x})}{\|\nabla \log p_t(\mathbf{x})\|^2}\nabla \log p_t(\mathbf{x})}_{\text{log-density correction}}.
 $$
  
- Our method minimizes deviations from the original sampling trajectory while ensuring the desired log-density changes. Empirically, this produces results similar to latent code scaling but with far greater flexibility and control.
+Our method minimizes deviations from the original sampling trajectory while ensuring the desired log-density changes. Empirically, this produces results similar to latent code scaling but with far greater flexibility and control.
 
 #### Choosing Dynamics
 
