@@ -12,10 +12,11 @@ pretty_table: true
 ## Diffusion models recap
 
 The idea of diffusion models <d-cite key="sohl2015deep,ho2020denoising,song2021scorebased"></d-cite> is to gradually transform the data distribution $$p_0$$ into pure noise $$p_T$$ (e.g. $$\mathcal{N}(0, I)$$). This is achieved via the forward noising kernel $$p_t(\mathbf{x}_t \mid \mathbf{x}_0) = \mathcal{N}(\alpha_t \mathbf{x}_0, \sigma_t^2 I)$$ with $$\alpha, \sigma$$ chosen so that all the information is lost at $$t=T$$, i.e. $$p_T(\mathbf{x}_T \mid \mathbf{x}_0) \approx p_T(\mathbf{x}_T) = \mathcal{N}(\mathbf{0}, \sigma_T^2 I)$$.
+Hence, as $$t$$ increases, $$\mathbf{x}_t$$​ becomes more `noisy', and at $$t=T$$ we reach a tractable distribution $$p_T$$.
 This process can equivalently be written as a Stochastic Differential Equation (SDE):
 
 \begin{equation}
-d\mathbb{x}_t = f(t)\mathbf{x}_t dt + g(t)d W_t, 
+d\mathbf{x}_t = f(t)\mathbf{x}_t dt + g(t)d W_t, 
 \end{equation}
 
 where $$f, g$$ are scalar functions and $$W$$ is the Wiener process.
@@ -26,7 +27,8 @@ The Reverse SDE <d-cite key="anderson1982reverse"></d-cite> is given by
 d\mathbf{x}_t = (f(t)\mathbf{x}_t - g^2(t)\nabla \log p_t(\mathbf{x}_t)) dt + g(t)d \overline{W}_t,
 \end{equation}
 
-where $$\overline{W}$$ is the Wiener process going backwards in time and $$\nabla \log p_t(\mathbf{x}_t)$$ is the *score function*. Since $$p_T$$ is a tractable distribution, we can easily sample $$\mathbf{x}_T \sim p_T$$ and solve \eqref{eq:rev-sde} to generate a sample $$\mathbf{x}_0 \sim p_0$$ as long as we know the score.
+where $$\overline{W}$$ is the Wiener process going backwards in time and $$\nabla \log p_t(\mathbf{x}_t)$$ is the *score function*, which can be accurately approximated with a neural network <d-cite key="hyvarinen2005estimation,vincent2011connection,song2020sliced"></d-cite>.
+Since $$p_T$$ is a tractable distribution, we can easily sample $$\mathbf{x}_T \sim p_T$$ and solve \eqref{eq:rev-sde} to generate a sample $$\mathbf{x}_0 \sim p_0$$.
 
 Rather surprisingly, it turns out that there exists an equivalent *deterministic* process <d-cite key="song2021scorebased,song2020denoising"></d-cite> given by an Ordinary Differential Equation (ODE):
 
@@ -34,7 +36,7 @@ Rather surprisingly, it turns out that there exists an equivalent *deterministic
 d\mathbf{x}_t = (f(t)\mathbf{x}_t - \frac{1}{2}g^2(t)\nabla \log p_t(\mathbf{x}_t)) dt,
 \end{equation}
 
-which is also guaranteed to generate a sample $$\mathbf{x}_0 \sim p_0$$ whenever $$\mathbf{x}_T \sim p_T$$ and the score function is acurately estimated.
+which is also guaranteed to generate a sample $$\mathbf{x}_0 \sim p_0$$ whenever $$\mathbf{x}_T \sim p_T$$.
 
 ## What is Log-Density?
 
@@ -43,6 +45,8 @@ Diffusion models are likelihood-based models <d-cite key="song2021maximum,kingma
 However, prior research <d-cite key="choi2018waic,nalisnick2018deep,nalisnick2019detecting,ben2024d"></d-cite> has shown that generative models can sometimes assign higher likelihoods to OOD data than to in-distribution data. In <d-cite key="karczewski2025diffusion"></d-cite>, we show that diffusion models are no different. In fact, we push this analysis further by exploring the highest-density regions of diffusion models.
 
 Using a theoretical **mode-tracking ODE**, we investigate the regions of the data space where the model assigns the highest likelihood. Surprisingly, these regions are occupied by cartoon-like drawings or blurry images—patterns that are absent from the training data. Additionally, we observe a strong correlation between negative log-density and PNG image size, revealing that negative log-likelihood for image data is essentially a measure of **information content** or **detail**, rather than "in-distribution-ness".
+
+These surprising observations underscore the difference between maximum-density points and typical sets, which we explore next
 
 <div class='l-body'>
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/density-guidance/cats_logp.jpg">
@@ -97,6 +101,8 @@ To measure log-density of samples from diffusion models, it’s important to und
 2. **Original Dynamics vs Modified Dynamics**:
    - Following original dynamics dictated by \eqref{eq:rev-sde} or \eqref{eq:pf-ode}.
    - Following some arbitrary dynamics.
+
+By ‘original dynamics,’ we mean the (reverse) SDE or ODE that exactly inverts the forward noising process, using the true or approximated score. By ‘any dynamics’, we allow modifications to the drift or diffusion terms, for instance (as we will see later) to control log-density.
 
 We summarize these in the table below:
 
