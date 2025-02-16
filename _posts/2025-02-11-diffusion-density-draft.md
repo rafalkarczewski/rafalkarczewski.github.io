@@ -11,47 +11,6 @@ pretty_table: true
 
 ## Diffusion models recap
 
-The idea of diffusion models <d-cite key="sohl2015deep,ho2020denoising,song2021scorebased"></d-cite> is to gradually transform the data distribution \(p_0\) into pure noise \(p_T\) (e.g. \(\mathcal{N}(0, I)\)). This is achieved via the forward noising kernel 
-\[
-p_t(\mathbf{x}_t \mid \mathbf{x}_0) = \mathcal{N}(\alpha_t \mathbf{x}_0, \sigma_t^2 I),
-\]
-with \(\alpha,\sigma\) chosen so that all the information is lost at \(t=T\), i.e. 
-\[
-p_T(\mathbf{x}_T \mid \mathbf{x}_0) \approx p_T(\mathbf{x}_T) = \mathcal{N}(\mathbf{0}, \sigma_T^2 I).
-\]
-Hence, as \(t\) increases, \(\mathbf{x}_t\) becomes more “noisy,” and at \(t=T\) we reach a tractable distribution \(p_T\).
-
-This process can equivalently be written as a Stochastic Differential Equation (SDE):
-
-\[
-d\mathbf{x}_t = f(t)\mathbf{x}_t\, dt + g(t)\,d W_t, 
-\]
-
-where \(f, g\) are scalar functions and \(W\) is the Wiener process. Remarkably, this process is reversible! The Reverse SDE <d-cite key="anderson1982reverse"></d-cite> is given by
-
-\[
-\label{eq:rev-sde}
-d\mathbf{x}_t 
-= \bigl(f(t)\mathbf{x}_t - g^2(t)\nabla \log p_t(\mathbf{x}_t)\bigr)\,dt
-+ g(t)\,d \overline{W}_t,
-\]
-
-where \(\overline{W}\) is the Wiener process going backwards in time and \(\nabla \log p_t(\mathbf{x}_t)\) is the *score function*, which can be accurately approximated with a neural network <d-cite key="hyvarinen2005estimation,vincent2011connection,song2020sliced"></d-cite>. Since \(p_T\) is a tractable distribution, we can easily sample \(\mathbf{x}_T \sim p_T\) and solve \eqref{eq:rev-sde} to generate a sample \(\mathbf{x}_0 \sim p_0\).
-
-Rather surprisingly, it turns out that there exists an equivalent *deterministic* process <d-cite key="song2021scorebased,song2020denoising"></d-cite> given by an Ordinary Differential Equation (ODE):
-
-\[
-\label{eq:pf-ode}
-d\mathbf{x}_t 
-= \Bigl(f(t)\mathbf{x}_t - \tfrac{1}{2}g^2(t)\nabla \log p_t(\mathbf{x}_t)\Bigr)\,dt,
-\]
-
-which is also guaranteed to generate a sample \(\mathbf{x}_0 \sim p_0\) whenever \(\mathbf{x}_T \sim p_T\). 
-
----
-
-## Diffusion models recap
-
 The idea of diffusion models <d-cite key="sohl2015deep,ho2020denoising,song2021scorebased"></d-cite> is to gradually transform the data distribution $$p_0$$ into pure noise $$p_T$$ (e.g. $$\mathcal{N}(0, I)$$). This is achieved via the forward noising kernel 
 $$
 p_t(\mathbf{x}_t \mid \mathbf{x}_0) = \mathcal{N}(\alpha_t \mathbf{x}_0, \sigma_t^2 I),
@@ -303,4 +262,3 @@ In practice, we let $$\varphi(t)=\widetilde{\varphi}(t)\,g(t)$$, controlling how
 Log-density is central to understanding and controlling diffusion models. Rather than signifying “in-distribution” membership, it mostly reflects the *amount of detail* in generated images. In <d-cite key="karczewski2025diffusion"></d-cite>, we investigate the peculiar high-density regions of diffusion models, revealing surprising artifacts and offering new ways to measure log-density in diverse sampling regimes. Building on this, <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite> introduces **Density Guidance**, a framework—both deterministic and stochastic—that lets us precisely sculpt how $$\log p_t(\mathbf{x}_t)$$ evolves during sampling.
 
 These findings deepen our theoretical grasp of diffusion models and open up **practical avenues** for generating images with fine-grained control over detail and variability.
-
