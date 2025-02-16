@@ -188,7 +188,7 @@ $$
 \end{equation}
 $$
 
-for a user-defined function $$b_t$$. We how that the solution that satisfies this and diverges from the original dr the least is given by
+for a user-defined function $$b_t$$. We how that the solution that satisfies this and diverges from the original drift the least is given by
 
 $$
 \begin{equation}
