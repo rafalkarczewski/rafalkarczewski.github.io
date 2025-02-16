@@ -53,7 +53,7 @@ $$
 P(\text{shell at } r) \propto r^{D-1} \exp(-r^2 / 2)dr.
 $$
 
-The key insight is that this probability is maximized not at $$ r = 0 $$ (the origin, where density is highest), but at $$ r = \sqrt{D-1} $$. The typical region is the sweet spot, where neither the volume nor the density is too low.
+The key insight is that this probability is maximized not at $$ r = 0 $$ (the origin, where density is highest), but at $$ r = \sqrt{D-1} $$. <d-footnote> This is because for \( f(r)= r^{D-1} \exp(-r^2 / 2)\) we have \( f'(r)= r^{D-2} \exp(-r^2/2) (D-1 - r^2) \) </d-footnote>The typical region is the sweet spot, where neither the volume nor the density is too low.
 
 #### Diffusion Models: High-Density Blurry Images vs. High-Volume Detailed Images
 
