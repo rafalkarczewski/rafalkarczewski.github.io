@@ -28,16 +28,16 @@ The observation that blurry images or cartoon-like drawings have the highest den
 
 #### Probability Density vs. Probability
 
-A helpful analogy is the standard normal Gaussian distribution in high dimensions. In this distribution, the point with the highest density is the origin (zero vector).
+A helpful analogy is the standard normal Gaussian distribution in high dimensions. Its density is proportional to $$\exp(-\|\mathbf{x}\|^2 / 2) $$ at any $$\mathbf{x} \in \mathbb{R}^D$$, which is the highest at the origin (zero vector).
 However, the origin is actually far from the "typical region" of the distribution. Most samples from a high-dimensional Gaussian are not concentrated near the origin but instead fall in a region at a certain distance from it. Why is that?
 
-The probability of being in a region $$ A $$ is determined by the integral of the density over that region:
+The probability of being in a region $$ A $$ is given by the integral of the density over that region:
 
 $$
 P(A) = \int_{A} p(\mathbf{x}) d\mathbf{x}.
 $$
 
-If the density is constant within $$ A $$, then the probability is proportional to the product of the density and the volume of $$A $$: 
+If the density is constant within $$ A $$, then the probability equals the product of the density and the volume of $$A $$: 
 
 $$
 P(A) = c \cdot \text{Vol}(A).
@@ -47,7 +47,6 @@ It is crucial to consider both the density and the volume!
 
 #### Gaussian Example: High Density but Low Probability at the Origin
 
-In the Gaussian case, the density at any point $$ \mathbf{x} \in \mathbb{R}^D$$ is proportional to $$\exp(-\|\mathbf{x}\|^2 / 2) $$.
 If we compute the probability of a thin spherical shell at radius $$ r $$ and thickness $$ dr $$, the volume of this shell is proportional to $$ r^{D-1}dr $$, and the probability is given by:
 
 $$
@@ -58,7 +57,7 @@ The key insight is that this probability is maximized not at $$ r = 0 $$ (the or
 
 #### Diffusion Models: High-Density Blurry Images vs. High-Volume Detailed Images
 
-A similar principle applies to diffusion models. Although blurry or cartoon-like images occupy regions of high density, the "volume" of such images—i.e., the diversity of possible variations—is much smaller compared to the volume of regions corresponding to detailed, textured images. As a result, diffusion models assign lower log-densities to more detailed images, despite their higher probability of being sampled.
+A similar principle applies to diffusion models. Although blurry or cartoon-like images occupy regions of high density, the "volume" of such images—i.e., the diversity of possible variations—is much smaller compared to the volume of regions corresponding to detailed, textured images. As a result, diffusion models assign lower log-densities to more detailed images.
 
 <!-- ---
 
@@ -75,8 +74,8 @@ A similar principle applies to diffusion models. Although blurry or cartoon-like
 To measure log-density in diffusion models, it’s important to understand different modes of sampling. Broadly, sampling in diffusion models can be categorized into two dimensions:
 
 1. **Deterministic vs Stochastic Sampling**:
-   - Deterministic sampling uses the **probability flow ODE**, following a smooth trajectory.
-   - Stochastic sampling leverages the **reverse SDE**, introducing randomness at each step.
+   - Deterministic sampling uses smooth trajectories given by ODEs.
+   - Stochastic sampling uses noisy trajecotories given by SDEs.
 
 2. **Original Dynamics vs Modified Dynamics**:
    - Sampling can follow the original dynamics dictated by PF-ODE or Rev-SDE.
@@ -112,7 +111,7 @@ Score alignment measures the angle between the score function at $$t = T$$ (the 
 
 ### Density Guidance: A Principled Approach to Controlling Log-Density
 
-While latent code scaling provides a heuristic way to control image detail, it lacks precision. In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we introduce **Density Guidance**, a principled modification of the generative ODE that allows precise control over the evolution of log-density during sampling.
+While latent code scaling provides a way to control image detail, it lacks precision. In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we introduce **Density Guidance**, a principled modification of the generative ODE that allows precise control over the evolution of log-density during sampling.
 
 The key idea is to design dynamics of $$\mathbf{x}_t$$ such that:
 
