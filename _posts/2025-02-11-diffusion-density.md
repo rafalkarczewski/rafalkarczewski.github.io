@@ -140,13 +140,14 @@ The key idea is to design dynamics of $$\mathbf{x}_t$$ such that:
 \frac{d \log p_t(\mathbf{x}_t)}{d t} = b_t(\mathbf{x}_t),
 \end{equation}
 
-where $$b_t$$ is a predefined function specifying how the log-density should evolve. We show that, for a flow model $$d \mathbf{x}_t=\mathbf{u}_t(\mathbf{x}_t)dt $$, which defines marginal distributions $$ p_t $$, we can modify the vector field to achieve \eqref{eq:logp-b} as long as we know the score $$ \nabla \log p_t(\mathbf{x})$$:
+where $$b_t$$ is a predefined function specifying how the log-density should evolve. We show that, for any flow model $$d \mathbf{x}_t=\mathbf{u}_t(\mathbf{x}_t)dt $$, which defines marginal distributions $$ p_t $$, we can modify the vector field to achieve \eqref{eq:logp-b} as long as we know the score $$ \nabla \log p_t(\mathbf{x})$$:
 
 $$
 \tilde{\mathbf{u}}_t(\mathbf{x})=\mathbf{u}_t(\mathbf{x}) + \underbrace{\frac{\operatorname{div}\mathbf{u}_t(\mathbf{x}) + b_t(\mathbf{x})}{\|\nabla \log p_t(\mathbf{x})\|^2}\nabla \log p_t(\mathbf{x})}_{\text{log-density correction}}.
 $$
  
-Our method minimizes deviations from the original sampling trajectory while ensuring the desired log-density changes. Empirically, this produces results similar to latent code scaling but with far greater flexibility and control.
+Our method minimizes deviations from the original sampling trajectory while ensuring the desired log-density changes.
+The remaining question is: *How to chose $$b_t$$?*
 
 #### Choosing Dynamics
 
@@ -158,15 +159,50 @@ $$
 
 is approximately $$\mathcal{N}(0, 1)$$ for $$\mathbf{x} \sim p_t$$, where the data dimension $$D$$ is high. This helps determine the "typical" range of log-density changes.
 
+\begin{equation}\label{eq:dgs}
+\vu^\textsc{dg-ode}_t(\vx) = f(t)\vx - \frac{1}{2}g^2(t)\eta_t(\vx)\nabla \log p_t(\vx),
+\end{equation}
+
+which matches the PF-ODE \eqref{eq:pf-ode} with a rescaled score function by
+
+\begin{equation}\label{eq:quantile-score-scaling}
+\eta_t(\vx)=1 + \frac{\sqrt{2D}\Phi^{-1}(q)}{\| \sigma_t \nabla \log p_t(\vx) \|^2},
+\end{equation}
+
+where $$\Phi^1(q)$$ is the $$q$$-th quantile of the standard normal distribution.
+
+<div class='l-body'>
+<img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/density-guidance/deterministic-steering.jpg">
+<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> **Density guidance enables control over image detail.** Samples geneared with the pretrained EDM2 model <d-cite key="karras2024analyzing"></d-cite> using \eqref{eq:quantile-score-scaling} with different values of \(q\) </figcaption>
+</div>
+
 ### Stochastic Sampling with Density Guidance
 
 So far, we’ve discussed controlling log-density in deterministic settings. However, stochastic sampling introduces additional challenges and opportunities. In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we extend density guidance to stochastic dynamics, showing that log-density can evolve smoothly under predefined trajectories, even when noise is injected.
+
+\begin{equation}\label{eq:stochastic-steering}
+d \vx_t =\vu_t^\textsc{dg-sde}(\vx_t)dt + \varphi(t)P_t(\vx_t)d\overline{\rW}_t
+\end{equation}
+
+\begin{equation}
+\vu^\textsc{dg-sde}_t(\vx) = \vu^\textsc{dg-ode}_t(\vx)
+  + \underbrace{\frac{1}{2}\varphi^2(t)\frac{\Delta \log p_t(\vx)}{\| \nabla \log p_t(\vx) \|^2}\nabla \log p_t(\vx)}_{\text{correction for added stochasticity}}
+\end{equation}
+
+\begin{equation}
+P_t(\vx) = \mI_D - \left(\frac{\nabla \log p_t(\vx)}{\| \nabla \log p_t(\vx) \|}\right) \hspace{-1mm} \left(\frac{\nabla \log p_t(\vx)}{\| \nabla \log p_t(\vx) \|}\right)^T
+\end{equation}
 
 This is particularly useful for balancing detail and variability in generated samples. For example:
 - Adding noise early in the sampling process introduces variation in high-level features like shapes.
 - Adding noise later affects only low-level details like texture.
 
 Our method ensures that the log-density evolution remains consistent with the deterministic case, allowing precise control while injecting controlled randomness.
+
+<div class='l-body'>
+<img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/density-guidance/stochastic-steering.jpg">
+<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> **Stochastic Density guidance allows for noise injection without sacrificing control over image detail.** Samples geneared with the pretrained EDM2 model <d-cite key="karras2024analyzing"></d-cite> using \eqref{eq:stochastic-steering} with different values of \(q\) and noisy injected at different stages of sampling. </figcaption>
+</div>
 
 ## Conclusion
 
