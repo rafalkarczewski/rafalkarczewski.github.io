@@ -169,7 +169,7 @@ which matches the PF-ODE \eqref{eq:pf-ode} with a rescaled score function <d-foo
 \eta_t(\mathbf{x})=1 + \frac{\sqrt{2D}\Phi^{-1}(q)}{\| \sigma_t \nabla \log p_t(\mathbf{x}) \|^2},
 \end{equation}
 
-where $$\Phi^1(q)$$ is the $$q$$-th quantile of the standard normal distribution.
+where $$\Phi^{-1}(q)$$ is the $$q$$-th quantile of the standard normal distribution.
 
 <div class='l-body'>
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/density-guidance/deterministic-steering.jpg">
