@@ -41,6 +41,17 @@ ninja.data = [{
           window.location.href = "/blog/2025/diffusion-density/";
         
       },
+    },{id: "post-understanding-likelihood-in-diffusion-models",
+      
+        title: "Understanding Likelihood in Diffusion Models",
+      
+      description: "A summary of our two recent articles on estimating and controling likelihood in diffusion models.",
+      section: "Posts",
+      handler: () => {
+        
+          window.location.href = "/blog/2025/diffusion-density-draft/";
+        
+      },
     },{id: "post-a-post-with-image-galleries",
       
         title: "a post with image galleries",
