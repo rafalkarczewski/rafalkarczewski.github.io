@@ -161,15 +161,19 @@ $$
 
 is approximately $$\mathcal{N}(0, 1)$$ for $$\mathbf{x} \sim p_t$$, where the data dimension $$D$$ is high. This helps determine the "typical" range of log-density changes.
 
+$$
 \begin{equation}\label{eq:dgs}
 \mathbf{u}^{\text{DG-ODE}}_t(\mathbf{x}) = f(t)\mathbf{x} - \frac{1}{2}g^2(t)\eta_t(\mathbf{x})\nabla \log p_t(\mathbf{x}),
 \end{equation}
+$$
 
 which matches the PF-ODE \eqref{eq:pf-ode} with a rescaled score function <d-footnote> Interestingly <d-cite key="karras2024guiding"></d-cite> explore scaling up the score function in the pursuit of targeting high-density regions and find resulting images lacking detail. We show that scaling the score function as in \eqref{eq:quantile-score-scaling} enables both controlling the amount of detail in both directions, but the scaling needs to be adaptive both in \(t\) and \( \mathbf{x} \) </d-footnote>  by
 
+$$
 \begin{equation}\label{eq:quantile-score-scaling}
 \eta_t(\mathbf{x})=1 + \frac{\sqrt{2D}\Phi^{-1}(q)}{\| \sigma_t \nabla \log p_t(\mathbf{x}) \|^2},
 \end{equation}
+$$
 
 where $$\Phi^{-1}(q)$$ is the $$q$$-th quantile of the standard normal distribution.
 
