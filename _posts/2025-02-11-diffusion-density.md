@@ -9,6 +9,34 @@ hidden: true
 pretty_table: true
 ---
 
+<d-contents>
+
+  <nav class="l-text figcaption">
+  <h3>Contents</h3>
+    <div><a href="#diffusion-models-recap"> Diffusion models recap </a></div>
+    <div><a href="#what-is-log-density">What is Log-Density?</a></div>
+    <ul>
+      <li><a href="#why-does-this-happen">Why Does This Happen?</a></li>
+      <ul>
+         <li><a href="#probability-density-vs-probability">Probability Density vs. Probability</a></li>
+         <li><a href="#a-gaussian-example">A Gaussian example</a></li>
+         <li><a href="#diffusion-models-high-density-blurry-images-vs-high-volume-detailed-images">Diffusion Models: High-Density Blurry Images vs. High-Volume Detailed Images</a></li>
+      </ul>
+    </ul>
+    <div><a href="#how-to-esimate-log-density">How to estimate Log-Density?</a></div>
+    <div><a href="#how-to-control-log-density">How to Control Log-Density?</a></div>
+    <ul>
+      <li><a href="#score-alignment">Score Alignment</a></li>
+      <li><a href="#density-guidance-a-principled-approach-to-controlling-log-density">Density Guidance: A Principled Approach to Controlling Log-Density</a></li>
+      <ul>
+         <li><a href="#choosing-the-guiding-function">Choosing the guiding function</a></li>
+      </ul>
+      <li><a href="#stochastic-sampling-with-density-guidance">Stochastic Sampling with Density Guidance</a></li>
+    </ul>
+    <div><a href="#conclusion">Conclusion</a></div>
+  </nav>
+</d-contents>
+
 ## Diffusion models recap
 
 The idea of diffusion models <d-cite key="sohl2015deep,ho2020denoising,song2021scorebased"></d-cite> is to gradually transform the data distribution $$p_0$$ into pure noise $$p_T$$ (e.g. $$\mathcal{N}(0, I)$$). This is achieved via the forward noising kernel $$p_t(\mathbf{x}_t \mid \mathbf{x}_0) = \mathcal{N}(\alpha_t \mathbf{x}_0, \sigma_t^2 I)$$ with $$\alpha, \sigma$$ chosen so that all the information is lost at $$t=T$$, i.e. $$p_T(\mathbf{x}_T \mid \mathbf{x}_0) \approx p_T(\mathbf{x}_T) = \mathcal{N}(\mathbf{0}, \sigma_T^2 I)$$.
@@ -102,7 +130,7 @@ To measure log-density of samples from diffusion models, it’s important to und
    - Following original dynamics dictated by \eqref{eq:rev-sde} or \eqref{eq:pf-ode}.
    - Following some arbitrary dynamics.
 
-By ‘original dynamics,’ we mean the (reverse) SDE or ODE that exactly inverts the forward noising process, using the true or approximated score. By ‘any dynamics’, we allow modifications to the drift or diffusion terms, for instance (as we will see later) to control log-density.
+By ‘original dynamics,’ we mean the (reverse) SDE or ODE that exactly inverts the forward noising process, using the approximated score. By ‘any dynamics’, we allow modifications to the drift or diffusion terms, for instance (as we will see later) to control log-density.
 
 We summarize these in the table below:
 
@@ -129,7 +157,7 @@ In the next section we show that the ability to estimate log-density under any d
 
 An interesting observation <d-cite key="song2021scorebased"></d-cite> is that simply rescaling the latent code (e.g., scaling the noise at the start of the sampling process) changes the amount of detail in the generated image. In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we provide a theoretical explanation for this phenomenon using a concept we call Score Alignment, which directly ties the scaling of the latent code to changes in log-density.
 
-#### Score Alignment
+### Score Alignment
 
 Score alignment measures the angle between:
 * The score function at $$t = T$$ (the noise distribution) pushed forward via PF-ODE \eqref{eq:pf-ode} to $$t = 0$$, and
@@ -172,7 +200,7 @@ In practice, this formula is most relevant to diffusion models because we alread
 This is why in the following sections we assume the diffusion model with $$\mathbf{u}_t$$ given by \eqref{eq:pf-ode}.
 The same framework can be used for any continuous-time flow model, provided the score is known.
 
-#### Choosing the guiding function $$b_t$$
+#### Choosing the guiding function
 
 While density guidance theoretically allows arbitrary changes to log-density, practical constraints must be considered. Log-density changes that are too large or too small can lead to samples falling outside the typical regions of the data distribution. To address this, we leverage an observation that the following term:
 
@@ -185,11 +213,11 @@ Based on that, we found that the following is a good choice for $$b_t$$
 
 $$
 \begin{equation}\label{eq:b-quantile}
-    b^q_t(\mathbf{x}) = -\div \mathbf{u}_t(\mathbf{x}) - \frac{1}{2}g^2(t) \frac{\sqrt{2D}}{\sigma_t^2} \Phi^{-1}(q),
+    b^q_t(\mathbf{x}) = -\operatorname{div} \mathbf{u}_t(\mathbf{x}) - \frac{1}{2}g^2(t) \frac{\sqrt{2D}}{\sigma_t^2} \Phi^{-1}(q),
 \end{equation}
 $$
 
-where $$q$$ is a hyperparameter, which increases $$\log p_0(\mathbf{x}_0)$$ for $$q>0.5$$ and decreases for $$q<0.5$$. This definition of $$b_t$$ leads to the following updated ODE
+$$\Phi^{-1}$$ is the quantile function of the standard normal distribution and $$q$$ is a hyperparameter, which increases $$\log p_0(\mathbf{x}_0)$$ for $$q>0.5$$ and decreases for $$q<0.5$$. This definition of $$b_t$$ leads to the following updated ODE
 
 $$
 \begin{equation}\label{eq:dgs}
@@ -197,26 +225,24 @@ $$
 \end{equation}
 $$
 
-which is the PF-ODE \eqref{eq:pf-ode} with a rescaled score function <d-footnote> Interestingly <d-cite key="karras2024guiding"></d-cite> explore scaling up the score function in the pursuit of targeting high-density regions and find resulting images lacking detail. We show that scaling the score function as in \eqref{eq:quantile-score-scaling} enables both controlling the amount of detail in both directions, but the scaling needs to be adaptive both in \(t\) and \( \mathbf{x} \) </d-footnote>  by
+which is the PF-ODE \eqref{eq:pf-ode} with a rescaled score function <d-footnote> Interestingly, <d-cite key="karras2024guiding"></d-cite> explore scaling up the score function in the pursuit of targeting high-density regions and find resulting images lacking detail. We show that scaling the score function as in \eqref{eq:quantile-score-scaling} enables both controlling the amount of detail in both directions, but the scaling needs to be adaptive both in \(t\) and \( \mathbf{x} \) </d-footnote>  by
 
 $$
 \begin{equation}\label{eq:quantile-score-scaling}
-\eta_t(\mathbf{x})=1 + \frac{\sqrt{2D}\Phi^{-1}(q)}{\| \sigma_t \nabla \log p_t(\mathbf{x}) \|^2},
+\eta_t(\mathbf{x})=1 + \frac{\sqrt{2D}\Phi^{-1}(q)}{\| \sigma_t \nabla \log p_t(\mathbf{x}) \|^2}.
 \end{equation}
 $$
 
-where $$\Phi^{-1}(q)$$ is the $$q$$-th quantile of the standard normal distribution.
-
 <div class='l-body'>
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/density-guidance/deterministic-steering.jpg">
-<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> **Density guidance enables control over image detail.** Samples geneared with the pretrained EDM2 model <d-cite key="karras2024analyzing"></d-cite> using \eqref{eq:quantile-score-scaling} with different values of \(q\) </figcaption>
+<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Density guidance enables control over image detail. Samples geneared with the pretrained EDM2 model <d-cite key="karras2024analyzing"></d-cite> using \eqref{eq:quantile-score-scaling} with different values of \(q\) </figcaption>
 </div>
 
 **Take-home:** *Density Guidance modifies the PF-ODE by rescaling the score, achieving fine-grained control of log-density over the entire sampling trajectory.*
 
 ### Stochastic Sampling with Density Guidance
 
-So far, we’ve discussed controlling log-density in deterministic settings. However, stochastic sampling introduces additional challenges and opportunities. In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we show that we can achieve the desired $$\frac{d \log p_t(\mathbf{x}_t)}{dt}=b_t(\mathbf{x}_t)$$ for stochastic trajectories given by:<d-footnote>
+So far, we’ve discussed controlling log-density in deterministic settings. However, stochastic sampling introduces additional challenges and opportunities. In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we show that, somewhat surprisingly, we can achieve the desired **smooth** evolution of log-density $$\frac{d \log p_t(\mathbf{x}_t)}{dt}=b_t(\mathbf{x}_t)$$ even for **stochastic** trajectories given by:<d-footnote>
 Technically, projecting out the score direction also introduces a small extra drift term. Empirically, this term is negligible, so we omit it in experiments. See <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite> for details.
 </d-footnote>
 
@@ -243,7 +269,7 @@ P_t(\mathbf{x}) = I - \left(\frac{\nabla \log p_t(\mathbf{x})}{\| \nabla \log p_
 $$
 
 Let's unpack this. We can add noise to the Density Guidance trajectory, but to maintain the desired evolution of log-density, we have to:
-* Project the Wiener increment with $$P_t$$ onto the subspace orthogonal to the score;
+* Project the Wiener increment $$d \overline{W}_t$$ with $$P_t$$ onto the subspace orthogonal to the score;
 * Correct the drift for the added stochasticity.
 
 In practice, we set $$\varphi(t) = \widetilde{\varphi}(t)g(t)$$, where $$\widetilde{\varphi}$$ specifies the amount of noise relative to $$g$$, which is the diffusion coefficient of \eqref{eq:rev-sde}. This simplifies \eqref{eq:stochastic-guidance-general} to  
@@ -264,7 +290,7 @@ Our method ensures that the log-density evolution remains consistent with the de
 
 <div class='l-body'>
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/density-guidance/stochastic-steering.jpg">
-<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> **Stochastic Density guidance allows for noise injection without sacrificing control over image detail.** Samples geneared with the pretrained EDM2 model <d-cite key="karras2024analyzing"></d-cite> using \eqref{eq:stochastic-steering} with different values of \(q\) and noisy injected at different stages of sampling. </figcaption>
+<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Stochastic Density guidance allows for noise injection without sacrificing control over image detail. Samples generated with the pretrained EDM2 model <d-cite key="karras2024analyzing"></d-cite> using \eqref{eq:stochastic-steering} with different values of \(q\) and noisy injected at different stages of sampling. </figcaption>
 </div>
 
 **Take-home:** *Stochastic Density Guidance = same rescaled score approach, plus a projected noise term that preserves the intended log-density schedule.*
