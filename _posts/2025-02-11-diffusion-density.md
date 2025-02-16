@@ -188,7 +188,7 @@ $$
 \end{equation}
 $$
 
-for a user-defined function $$b_t$$. We how that the solution that satisfies this and diverges from the original drift is given by
+for a user-defined function $$b_t$$. We how that the solution that satisfies this and diverges from the original dr the least is given by
 
 $$
 \begin{equation}
@@ -270,7 +270,7 @@ $$
 
 Let's unpack this. We can add noise to the Density Guidance trajectory, but to maintain the desired evolution of log-density, we have to:
 * Project the Wiener increment $$d \overline{W}_t$$ with $$P_t$$ onto the subspace orthogonal to the score;
-* Correct the drift for the added stochasticity.
+* Correct the drift for the added stochasticity. To estimate $$\Delta \log p_t(\mathbf{x})=\operatorname{div} \nabla \log p_t(\mathbf{x})$$, we use the Hutchinson trick <d-cite key="hutchinson1989stochastic,grathwohl2018ffjord"></d-cite>
 
 In practice, we set $$\varphi(t) = \widetilde{\varphi}(t)g(t)$$, where $$\widetilde{\varphi}$$ specifies the amount of noise relative to $$g$$, which is the diffusion coefficient of \eqref{eq:rev-sde}. This simplifies \eqref{eq:stochastic-guidance-general} to  
 
