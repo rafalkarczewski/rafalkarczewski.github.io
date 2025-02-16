@@ -186,21 +186,6 @@
 
 {% if site.enable_math %}
   <!-- MathJax -->
-  <!-- FIRST: mathjax-setup.js -->
-  <script src="/assets/js/mathjax-setup.js"></script>
-
-  <!-- SECOND: pseudocode-setup.js -->
-  <script src="/assets/js/pseudocode-setup.js"></script>
-
-  <!-- FINALLY: load MathJax itself -->
-  <script>
-  window.MathJax = {
-    tex: {
-      packages: { '[+]': ['ams'] },
-      tags: 'ams'
-    }
-  };
-  </script>
   <script
     defer
     type="text/javascript"
