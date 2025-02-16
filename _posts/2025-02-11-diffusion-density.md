@@ -143,7 +143,9 @@ The key idea is to design dynamics of $$\mathbf{x}_t$$ such that:
 where $$b_t$$ is a predefined function specifying how the log-density should evolve. We show that, for any flow model $$d \mathbf{x}_t=\mathbf{u}_t(\mathbf{x}_t)dt $$, which defines marginal distributions $$ p_t $$, we can modify the vector field to achieve \eqref{eq:logp-b} as long as we know the score $$ \nabla \log p_t(\mathbf{x})$$:
 
 $$
+\begin{equation}
 \tilde{\mathbf{u}}_t(\mathbf{x})=\mathbf{u}_t(\mathbf{x}) + \underbrace{\frac{\operatorname{div}\mathbf{u}_t(\mathbf{x}) + b_t(\mathbf{x})}{\|\nabla \log p_t(\mathbf{x})\|^2}\nabla \log p_t(\mathbf{x})}_{\text{log-density correction}}.
+\end{equation}
 $$
  
 Our method minimizes deviations from the original sampling trajectory while ensuring the desired log-density changes.
@@ -160,7 +162,7 @@ $$
 is approximately $$\mathcal{N}(0, 1)$$ for $$\mathbf{x} \sim p_t$$, where the data dimension $$D$$ is high. This helps determine the "typical" range of log-density changes.
 
 \begin{equation}\label{eq:dgs}
-\mathbf{u}^{\text{DG-ODE}}_t(\mathbf{x}) = f(t)\mathbf{x} - \frac{1}{2}g^2(t)\color{red}{\eta_t(\mathbf{x})}\nabla \log p_t(\mathbf{x}),
+\mathbf{u}^{\text{DG-ODE}}_t(\mathbf{x}) = f(t)\mathbf{x} - \frac{1}{2}g^2(t)\eta_t(\mathbf{x})\nabla \log p_t(\mathbf{x}),
 \end{equation}
 
 which matches the PF-ODE \eqref{eq:pf-ode} with a rescaled score function <d-footnote> Interestingly <d-cite key="karras2024guiding"></d-cite> explore scaling up the score function in the pursuit of targeting high-density regions and find resulting images lacking detail. We show that scaling the score function as in \eqref{eq:quantile-score-scaling} enables both controlling the amount of detail in both directions, but the scaling needs to be adaptive both in \(t\) and \( \mathbf{x} \) </d-footnote>  by
@@ -184,9 +186,12 @@ So far, we’ve discussed controlling log-density in deterministic settings. How
 d \mathbf{x}_t =\mathbf{u}_t^{\text{DG-SDE}}(\mathbf{x}_t)dt + \varphi(t)P_t(\mathbf{x}_t)d\overline{W}_t
 \end{equation}
 
+
+$$
 \begin{equation}
-\displaystyle \mathbf{u}^{\text{DG-SDE}}_t(\mathbf{x}) = \mathbf{u}^{\text{DG-ODE}}_t(\mathbf{x})+ \underbrace{\frac{1}{2}\varphi^2(t)\frac{\Delta \log p_t(\mathbf{x})}{\| \nabla \log p_t(\mathbf{x}) \|^2}\nabla \log p_t(\mathbf{x})}_{\text{correction for added stochasticity}}
+\mathbf{u}^{\text{DG-SDE}}_t(\mathbf{x}) = \mathbf{u}^{\text{DG-ODE}}_t(\mathbf{x})+ \underbrace{\frac{1}{2}\varphi^2(t)\frac{\Delta \log p_t(\mathbf{x})}{\| \nabla \log p_t(\mathbf{x}) \|^2}\nabla \log p_t(\mathbf{x})}_{\text{correction for added stochasticity}}
 \end{equation}
+$$
 
 $$
 \begin{equation}
