@@ -163,21 +163,6 @@
 
 {% if site.enable_math %}
   <!-- MathJax -->
-  <script>
-  window.MathJax = {
-    tex: {
-      // Tells MathJax to load AMS package in addition to the default TeX package
-      packages: { '[+]': ['ams'] },
-
-      // AMS-style equation numbering for \begin{equation}...\end{equation}
-      tags: 'ams',
-
-      // optional: which delimiters do you want for inline or display math
-      inlineMath: [['$', '$'], ['\\(', '\\)']],
-      displayMath: [['$$','$$'], ['\\[','\\]']],
-    }
-  };
-  </script>
   <script
     defer
     type="text/javascript"

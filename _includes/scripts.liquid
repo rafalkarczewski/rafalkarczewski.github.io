@@ -186,6 +186,14 @@
 
 {% if site.enable_math %}
   <!-- MathJax -->
+  <script>
+  window.MathJax = {
+    tex: {
+      packages: { '[+]': ['ams'] },
+      tags: 'ams'
+    }
+  };
+  </script>
   <script
     defer
     type="text/javascript"
