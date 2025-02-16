@@ -114,6 +114,13 @@ We summarize these in the table below:
 Previously, log-density was only measurable for deterministic sampling with original dynamics. In <d-cite key="karczewski2025diffusion"></d-cite>, we extend this to deterministic sampling under modified dynamics and stochastic sampling under original dynamics.<d-footnote> Interestingly, we show in <d-cite key="karczewski2025diffusion"></d-cite> that once the true score function is replaced with the approximate one, the log-density estimate becomes biased. We derive the exact formula for this bias and show that it goes to zero when the score function estimation error does.</d-footnote>
 In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we further generalize this to stochastic sampling with modified dynamics, deriving the evolution of log-density using the general **Itô's Lemma** and the **Fokker-Planck equation**.
 One can see that since stochastic trajectories are a strict generalization of determinic ones (vanishing diffusion term), the method for log-density estimation for any stochastic trajectory is a strict generalization of all the other ones.
+Specifically, we provide a general formula for how $$\log p_t(\mathbf{x}_t)$$ evolves for any process $$\mathbf{x}$$ given by:
+
+$$
+\begin{equation}
+d \mathbf{x}_t = \mathbf{u}_t(\mathbf{x}_t)dt + G_t(\mathbf{x}_t)d\overline{W}_t
+\end{equation}
+$$
 
 In the next section we show that the ability to estimate log-density under any dynamics allows for controlling it.
 
@@ -160,6 +167,15 @@ h_t(\mathbf{x}) = \frac{\sigma_t^2 \left(\Delta \log p_t(\mathbf{x}) + \|\nabla 
 $$
 
 is approximately $$\mathcal{N}(0, 1)$$ for $$\mathbf{x} \sim p_t$$, where the data dimension $$D$$ is high. This helps determine the "typical" range of log-density changes.
+Based on that, we found that the following is a good choice for $$b_t$$
+
+$$
+\begin{equation}\label{eq:b-quantile}
+    b^q_t(\vx) = -\div \vu_t(\vx) - \frac{1}{2}g^2(t) \frac{\sqrt{2D}}{\sigma_t^2} \Phi^{-1}(q),
+\end{equation}
+$$
+
+where $$q$$ is a hyperparameter, which increases $$\log p_0(\mathbf{x}_0)$$ for $$q>0.5$$ and decreases for $$q<0.5$$. This definition of $$b_t$$ leads to the following updated ODE
 
 $$
 \begin{equation}\label{eq:dgs}
@@ -186,22 +202,39 @@ where $$\Phi^{-1}(q)$$ is the $$q$$-th quantile of the standard normal distribut
 
 So far, we’ve discussed controlling log-density in deterministic settings. However, stochastic sampling introduces additional challenges and opportunities. In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we extend density guidance to stochastic dynamics, showing that log-density can evolve smoothly under predefined trajectories, even when noise is injected.
 
+$$
 \begin{equation}\label{eq:stochastic-steering}
 d \mathbf{x}_t =\mathbf{u}_t^{\text{DG-SDE}}(\mathbf{x}_t)dt + \varphi(t)P_t(\mathbf{x}_t)d\overline{W}_t
 \end{equation}
-
-
 $$
-\begin{equation}
-\mathbf{u}^{\textsc{dg-sde}}_t(\mathbf{x}) = \mathbf{u}^{\text{DG-ODE}}_t(\mathbf{x})+ \underbrace{\frac{1}{2}\varphi^2(t)\frac{\Delta \log p_t(\mathbf{x})}{\| \nabla \log p_t(\mathbf{x}) \|^2}\nabla \log p_t(\mathbf{x})}_{\text{correction for added stochasticity}}
-\end{equation}
-$$
+
 
 $$
 \begin{equation}
-P_t(\mathbf{x}) = I - \left(\frac{\nabla \log p_t(\mathbf{x})}{\| \nabla \log p_t(\mathbf{x}) \|}\right) \hspace{-1mm} \left(\frac{\nabla \log p_t(\mathbf{x})}{\| \nabla \log p_t(\mathbf{x}) \|}\right)^T
+\mathbf{u}^{\text{DG-SDE}}_t(\mathbf{x}) = \mathbf{u}^{\text{DG-ODE}}_t(\mathbf{x})+ \underbrace{\frac{1}{2}\varphi^2(t)\frac{\Delta \log p_t(\mathbf{x})}{\| \nabla \log p_t(\mathbf{x}) \|^2}\nabla \log p_t(\mathbf{x})}_{\text{correction for added stochasticity}},
 \end{equation}
 $$
+
+where
+
+$$
+\begin{equation}
+P_t(\mathbf{x}) = I - \left(\frac{\nabla \log p_t(\mathbf{x})}{\| \nabla \log p_t(\mathbf{x}) \|}\right) \hspace{-1mm} \left(\frac{\nabla \log p_t(\mathbf{x})}{\| \nabla \log p_t(\mathbf{x}) \|}\right)^T.
+\end{equation}
+$$
+
+Note that $$P_t$$ is a projection matrix on the orthogonal complement of the subspace spanned by the score function. 
+This ensures that, even though the trajectories $$\mathbf{x}$$ are stochastic, $$\log p_t(\mathbf{x}_t)$$ changes smoothly.
+In practice we set $$\varphi(t) = \widetilde{\varphi}(t)g(t)$$, where $$\widetilde{\varphi}$$ specifies the amount of noise relative to $$g$$, which is the diffusion coefficient of \eqref{eq:rev-sde}.
+This leads to 
+
+$$
+\begin{equation}
+\mathbf{u}^{\text{DG-SDE}}_t(\mathbf{x})=f(t)\mathbf{x} - \frac{1}{2}g^2(t)\left(\eta_t(\mathbf{x})-\widetilde{\varphi}^2(t)\frac{\Delta \log p_t(\mathbf{x})}{\| \nabla \log p_t(\mathbf{x}) \|^2}\right)\nabla \log p_t(\mathbf{x}),
+\end{equation}
+$$
+
+which again is simply \eqref{eq:pf-ode} with an appropriately rescaled score function.
 
 This is particularly useful for balancing detail and variability in generated samples. For example:
 - Adding noise early in the sampling process introduces variation in high-level features like shapes.
