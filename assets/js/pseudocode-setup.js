@@ -1,17 +1,23 @@
-window.MathJax = {
-  tex: {
-    inlineMath: [
-      ["$", "$"],
-      ["\\(", "\\)"],
-    ],
-    displayMath: [
-      ["$$", "$$"],
-      ["\\[", "\\]"],
-    ],
-    processEscapes: true,
-    processEnvironments: true,
-  },
-};
+if (!window.MathJax) {
+  window.MathJax = {};
+}
+if (!window.MathJax.tex) {
+  window.MathJax.tex = {};
+}
+
+// Merge in the new settings for inlineMath, displayMath, etc.
+Object.assign(window.MathJax.tex, {
+  inlineMath: [
+    ["$", "$"],
+    ["\\(", "\\)"]
+  ],
+  displayMath: [
+    ["$$", "$$"],
+    ["\\[", "\\]"]
+  ],
+  processEscapes: true,
+  processEnvironments: true
+});
 
 document.addEventListener("readystatechange", () => {
   if (document.readyState === "complete") {
