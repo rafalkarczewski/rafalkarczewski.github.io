@@ -65,7 +65,7 @@ $$
 P(A) = \int_{A} p(\mathbf{x}) d\mathbf{x}.
 $$
 
-If the density is constant within $$ A $$, then the probability equals the product of the density and the volume of $$A $$: 
+If the density is constant (and equal to $$c$$) within $$ A $$, then the probability equals the product of the density and the volume of $$A $$: 
 
 $$
 P(A) = c \cdot \text{Vol}(A).
@@ -75,10 +75,10 @@ $$
 
 #### A Gaussian example
 
-A helpful analogy is the standard normal Gaussian distribution in high dimensions. Its density is proportional to $$\exp(-\|\mathbf{x}\|^2 / 2) $$ at any $$\mathbf{x} \in \mathbb{R}^D$$, which is the highest at the origin (zero vector).
+A helpful analogy is the standard normal Gaussian distribution in high dimensions. Its density is proportional to $$\exp(-\|\mathbf{x}\|^2 / 2) $$ at any $$\mathbf{x} \in \mathbb{R}^D$$, which is the highest at the origin $$\mathbf{x}=\mathbf{0}$$.
 However, the origin is actually far from the "typical region" of the distribution. Most samples from a high-dimensional Gaussian are not concentrated near the origin but instead fall in a region at a certain distance from it. Why is that?
 
-If we compute the probability of a thin spherical shell (where the Gaussian density is constant) at radius $$ r $$ and thickness $$ dr $$, the volume of this shell is proportional to $$ r^{D-1}dr $$, and the probability is given by:
+Consider the probability of a thin spherical shell (where the Gaussian density is constant) at radius $$ r $$ and thickness $$ dr $$, the volume of this shell is proportional to $$ r^{D-1}dr $$, and the probability is given by:
 
 $$
 P(\text{shell at } r) \propto r^{D-1} \exp(-r^2 / 2)dr.
@@ -111,8 +111,9 @@ We summarize these in the table below:
 | **Deterministic** | Prior work <d-cite key="chen2018neural"></d-cite>  | Ours <d-cite key="karczewski2025diffusion"></d-cite>     |
 | **Stochastic**    | Ours <d-cite key="karczewski2025diffusion"></d-cite>    | Ours <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>     |
 
-Previously, log-density was only measurable for deterministic sampling with original dynamics. In <d-cite key="karczewski2025diffusion"></d-cite>, we extend this to deterministic sampling under modified dynamics and stochastic sampling under original dynamics.<d-footnote> Interestingly, we show in <d-cite key="karczewski2025diffusion"></d-cite> that once the true score function is replaced with the approximate one, the log-density estimate becomes biased. We derive the exact formula for this bias and show that it goes to zero when the score function estimation error does.</d-footnote>
-In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we further generalize this to stochastic sampling with modified dynamics, deriving the evolution of log-density using the general **Itô's Lemma** and the **Fokker-Planck equation**.
+Previously, log-density was only measurable for deterministic sampling with original dynamics. In <d-cite key="karczewski2025diffusion"></d-cite>, we extend this to deterministic sampling under any dynamics and stochastic sampling under original dynamics.<d-footnote> Interestingly, we show in <d-cite key="karczewski2025diffusion"></d-cite> that once the true score function is replaced with the approximate one, the log-density estimate becomes biased. We derive the exact formula for this bias and show that it goes to zero when the score function estimation error does.</d-footnote>
+
+In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we further generalize this to stochastic sampling with any dynamics.
 One can see that since stochastic trajectories are a strict generalization of determinic ones (vanishing diffusion term), the method for log-density estimation for any stochastic trajectory is a strict generalization of all the other ones.
 Specifically, we provide a general formula for how $$\log p_t(\mathbf{x}_t)$$ evolves for any process $$\mathbf{x}$$ given by:
 
@@ -130,35 +131,48 @@ An interesting observation <d-cite key="song2021scorebased"></d-cite> is that si
 
 #### Score Alignment
 
-Score alignment measures the angle between the score function at $$t = T$$ (the noise distribution) pushed forward via PF-ODE \eqref{eq:pf-ode} to $$t = 0$$, and the score function at $$t = 0$$ (the data distribution). If the angle is always acute, scaling the latent code at $$t = T$$ changes $$\log p_0(\mathbf{x}_0)$$ in a monotonic way, explaining the relationship between scaling and image detail.<d-footnote> If the angle is always obtuse, scaling has a reverse effect, i.e. increasing \( \log p_T(\mathbf{x}_T) \) decreases \( \log p_0(\mathbf{x}_0) \) </d-footnote> Remarkably, we show that this alignment can be measured without explicitly knowing the score function, see <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite> for the proof and JAX code.
+Score alignment measures the angle between:
+* The score function at $$t = T$$ (the noise distribution) pushed forward via PF-ODE \eqref{eq:pf-ode} to $$t = 0$$, and
+* The score function at $$t = 0$$ (the data distribution).
+
+If the angle is always acute, scaling the latent code at $$t = T$$ changes $$\log p_0(\mathbf{x}_0)$$ in a monotonic way, explaining the relationship between scaling and image detail.<d-footnote> If the angle is always obtuse, scaling has a reverse effect, i.e. increasing \( \log p_T(\mathbf{x}_T) \) decreases \( \log p_0(\mathbf{x}_0) \) </d-footnote> Remarkably, we show that this alignment can be measured without explicitly knowing the score function, see <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite> for the proof and implementation.
 
 <div class='l-body'>
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/density-guidance/sa_vis.png">
 <figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Score Alignment is a condition that guarantees monotonic impact of scaling the latent code on the log-density of the decoded sample. It is tractable to verify in practice, even without knowing the score function. Empirically we verify that it almost always holds for diffusion models on image data. </figcaption>
 </div>
 
+**Take-home:** *If SA holds, simply rescaling the latent noise $$\mathbf{x}_T$$ is a quick way to increase or decrease the final log-density (and thus control image detail).*
+
 ### Density Guidance: A Principled Approach to Controlling Log-Density
 
-While latent code scaling provides a way to control image detail, it lacks precision. In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we introduce **Density Guidance**, a principled modification of the generative ODE that allows precise control over the evolution of log-density during sampling.
+While latent code scaling provides a way to control image detail, it lacks precision. In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we propose **Density Guidance**, a more precise way to guide how $$\log p_t(\mathbf{x}_t)$$ evolves during sampling. We start from a general flow model
 
-The key idea is to design dynamics of $$\mathbf{x}_t$$ such that:
+$$
+d\mathbf{x}_t=\mathbf{u}_t(\mathbf{x}_t)dt
+$$
 
+and we want to enforce
+
+$$
 \begin{equation}\label{eq:logp-b}
-\frac{d \log p_t(\mathbf{x}_t)}{d t} = b_t(\mathbf{x}_t),
+\frac{d \log p_t(\mathbf{x}_t)}{d t} = b_t(\mathbf{x}_t)
 \end{equation}
+$$
 
-where $$b_t$$ is a predefined function specifying how the log-density should evolve. We show that, for any flow model $$d \mathbf{x}_t=\mathbf{u}_t(\mathbf{x}_t)dt $$, which defines marginal distributions $$ p_t $$, we can modify the vector field to achieve \eqref{eq:logp-b} as long as we know the score $$ \nabla \log p_t(\mathbf{x})$$:
+for a user-defined function $$b_t$$. We how that the solution that satisfies this and diverges from the original drift is given by
 
 $$
 \begin{equation}
 \tilde{\mathbf{u}}_t(\mathbf{x})=\mathbf{u}_t(\mathbf{x}) + \underbrace{\frac{\operatorname{div}\mathbf{u}_t(\mathbf{x}) + b_t(\mathbf{x})}{\|\nabla \log p_t(\mathbf{x})\|^2}\nabla \log p_t(\mathbf{x})}_{\text{log-density correction}}.
 \end{equation}
 $$
- 
-Our method minimizes deviations from the original sampling trajectory while ensuring the desired log-density changes.
-The remaining question is: *How to chose $$b_t$$?*
 
-#### Choosing Dynamics
+In practice, this formula is most relevant to diffusion models because we already have (an approximation of) $$\nabla \log p_t(\mathbf{x})$$. 
+This is why in the following sections we assume the diffusion model with $$\mathbf{u}_t$$ given by \eqref{eq:pf-ode}.
+The same framework can be used for any continuous-time flow model, provided the score is known.
+
+#### Choosing the guiding function $$b_t$$
 
 While density guidance theoretically allows arbitrary changes to log-density, practical constraints must be considered. Log-density changes that are too large or too small can lead to samples falling outside the typical regions of the data distribution. To address this, we leverage an observation that the following term:
 
@@ -171,7 +185,7 @@ Based on that, we found that the following is a good choice for $$b_t$$
 
 $$
 \begin{equation}\label{eq:b-quantile}
-    b^q_t(\vx) = -\div \vu_t(\vx) - \frac{1}{2}g^2(t) \frac{\sqrt{2D}}{\sigma_t^2} \Phi^{-1}(q),
+    b^q_t(\mathbf{x}) = -\div \mathbf{u}_t(\mathbf{x}) - \frac{1}{2}g^2(t) \frac{\sqrt{2D}}{\sigma_t^2} \Phi^{-1}(q),
 \end{equation}
 $$
 
@@ -183,7 +197,7 @@ $$
 \end{equation}
 $$
 
-which matches the PF-ODE \eqref{eq:pf-ode} with a rescaled score function <d-footnote> Interestingly <d-cite key="karras2024guiding"></d-cite> explore scaling up the score function in the pursuit of targeting high-density regions and find resulting images lacking detail. We show that scaling the score function as in \eqref{eq:quantile-score-scaling} enables both controlling the amount of detail in both directions, but the scaling needs to be adaptive both in \(t\) and \( \mathbf{x} \) </d-footnote>  by
+which is the PF-ODE \eqref{eq:pf-ode} with a rescaled score function <d-footnote> Interestingly <d-cite key="karras2024guiding"></d-cite> explore scaling up the score function in the pursuit of targeting high-density regions and find resulting images lacking detail. We show that scaling the score function as in \eqref{eq:quantile-score-scaling} enables both controlling the amount of detail in both directions, but the scaling needs to be adaptive both in \(t\) and \( \mathbf{x} \) </d-footnote>  by
 
 $$
 \begin{equation}\label{eq:quantile-score-scaling}
@@ -198,24 +212,29 @@ where $$\Phi^{-1}(q)$$ is the $$q$$-th quantile of the standard normal distribut
 <figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> **Density guidance enables control over image detail.** Samples geneared with the pretrained EDM2 model <d-cite key="karras2024analyzing"></d-cite> using \eqref{eq:quantile-score-scaling} with different values of \(q\) </figcaption>
 </div>
 
+**Take-home:** *Density Guidance modifies the PF-ODE by rescaling the score, achieving fine-grained control of log-density over the entire sampling trajectory.*
+
 ### Stochastic Sampling with Density Guidance
 
-So far, we’ve discussed controlling log-density in deterministic settings. However, stochastic sampling introduces additional challenges and opportunities. In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we extend density guidance to stochastic dynamics, showing that log-density can evolve smoothly under predefined trajectories, even when noise is injected.
+So far, we’ve discussed controlling log-density in deterministic settings. However, stochastic sampling introduces additional challenges and opportunities. In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we show that we can achieve the desired $$\frac{d \log p_t(\mathbf{x}_t)}{dt}=b_t(\mathbf{x}_t)$$ for stochastic trajectories given by:<d-footnote>
+Technically, projecting out the score direction also introduces a small extra drift term. Empirically, this term is negligible, so we omit it in experiments. See <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite> for details.
+</d-footnote>
 
 $$
 \begin{equation}\label{eq:stochastic-steering}
-d \mathbf{x}_t =\mathbf{u}_t^{\text{DG-SDE}}(\mathbf{x}_t)dt + \varphi(t)P_t(\mathbf{x}_t)d\overline{W}_t
-\end{equation}
-$$
-
-
-$$
-\begin{equation}
-\mathbf{u}^{\text{DG-SDE}}_t(\mathbf{x}) = \mathbf{u}^{\text{DG-ODE}}_t(\mathbf{x})+ \underbrace{\frac{1}{2}\varphi^2(t)\frac{\Delta \log p_t(\mathbf{x})}{\| \nabla \log p_t(\mathbf{x}) \|^2}\nabla \log p_t(\mathbf{x})}_{\text{correction for added stochasticity}},
+d \mathbf{x}_t =\mathbf{u}_t^{\text{DG-SDE}}(\mathbf{x}_t)dt + \varphi(t)P_t(\mathbf{x}_t)d\overline{W}_t,
 \end{equation}
 $$
 
 where
+
+$$
+\begin{equation}\label{eq:stochastic-guidance-general}
+\mathbf{u}^{\text{DG-SDE}}_t(\mathbf{x}) = \mathbf{u}^{\text{DG-ODE}}_t(\mathbf{x})+ \underbrace{\frac{1}{2}\varphi^2(t)\frac{\Delta \log p_t(\mathbf{x})}{\| \nabla \log p_t(\mathbf{x}) \|^2}\nabla \log p_t(\mathbf{x})}_{\text{correction for added stochasticity}}
+\end{equation}
+$$
+
+and
 
 $$
 \begin{equation}
@@ -223,10 +242,11 @@ P_t(\mathbf{x}) = I - \left(\frac{\nabla \log p_t(\mathbf{x})}{\| \nabla \log p_
 \end{equation}
 $$
 
-Note that $$P_t$$ is a projection matrix on the orthogonal complement of the subspace spanned by the score function. 
-This ensures that, even though the trajectories $$\mathbf{x}$$ are stochastic, $$\log p_t(\mathbf{x}_t)$$ changes smoothly.
-In practice we set $$\varphi(t) = \widetilde{\varphi}(t)g(t)$$, where $$\widetilde{\varphi}$$ specifies the amount of noise relative to $$g$$, which is the diffusion coefficient of \eqref{eq:rev-sde}.
-This leads to 
+Let's unpack this. We can add noise to the Density Guidance trajectory, but to maintain the desired evolution of log-density, we have to:
+* Project the Wiener increment with $$P_t$$ onto the subspace orthogonal to the score;
+* Correct the drift for the added stochasticity.
+
+In practice, we set $$\varphi(t) = \widetilde{\varphi}(t)g(t)$$, where $$\widetilde{\varphi}$$ specifies the amount of noise relative to $$g$$, which is the diffusion coefficient of \eqref{eq:rev-sde}. This simplifies \eqref{eq:stochastic-guidance-general} to  
 
 $$
 \begin{equation}
@@ -234,11 +254,11 @@ $$
 \end{equation}
 $$
 
-which again is simply \eqref{eq:pf-ode} with an appropriately rescaled score function.
+which again boils down to the PF-ODE \eqref{eq:pf-ode} with an appropriately rescaled score function.
 
 This is particularly useful for balancing detail and variability in generated samples. For example:
-- Adding noise early in the sampling process introduces variation in high-level features like shapes.
-- Adding noise later affects only low-level details like texture.
+- Adding noise early ($$\widetilde{\varphi}(t) \neq 0$$ for large $$t$$) in the sampling process introduces variation in high-level features like shapes.
+- Adding noise later ($$\widetilde{\varphi}(t) \neq 0$$ for small $$t$$) affects only low-level details like texture.
 
 Our method ensures that the log-density evolution remains consistent with the deterministic case, allowing precise control while injecting controlled randomness.
 
@@ -247,8 +267,10 @@ Our method ensures that the log-density evolution remains consistent with the de
 <figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> **Stochastic Density guidance allows for noise injection without sacrificing control over image detail.** Samples geneared with the pretrained EDM2 model <d-cite key="karras2024analyzing"></d-cite> using \eqref{eq:stochastic-steering} with different values of \(q\) and noisy injected at different stages of sampling. </figcaption>
 </div>
 
+**Take-home:** *Stochastic Density Guidance = same rescaled score approach, plus a projected noise term that preserves the intended log-density schedule.*
+
 ## Conclusion
 
-Log-density is a crucial concept in understanding and controlling diffusion models. It measures the level of detail in generated images rather than merely determining in-distribution likelihood. In <d-cite key="karczewski2025diffusion"></d-cite>, we explore the curious behavior of high-density regions in diffusion models, revealing unexpected patterns and proposing new ways to measure log-density across sampling methods. In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we go further, introducing **Density Guidance** and demonstrating how to precisely control log-density in both deterministic and stochastic settings.
+Log-density is a crucial concept in understanding and controlling diffusion models. It measures the level of detail in generated images rather than determining in-distribution likelihood. In <d-cite key="karczewski2025diffusion"></d-cite>, we explore the curious behavior of high-density regions in diffusion models, revealing unexpected patterns and proposing new ways to measure log-density across sampling methods. In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we go further, introducing **Density Guidance** and demonstrating how to precisely control log-density in both deterministic and stochastic settings.
 
 These findings not only advance our theoretical understanding of diffusion models but also open up practical avenues for generating images with fine-grained control over detail and variability.
