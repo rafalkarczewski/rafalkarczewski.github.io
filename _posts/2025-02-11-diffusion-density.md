@@ -9,6 +9,33 @@ hidden: true
 pretty_table: true
 ---
 
+## Diffusion models recap
+
+The idea of diffusion models <d-cite key="sohl2015deep,ho2020denoising,song2021scorebased"></d-cite> is to gradually transform the data distribution $$p_0$$ into pure noise $$p_T$$ (e.g. $$\mathcal{N}(0, I)$$). This is achieved via the forward noising kernel $$p_t(\mathbf{x}_t \mid \mathbf{x}_0) = \mathcal{N}(\alpha_t \mathbf{x}_0, \sigma_t^2 I)$$ with $$\alpha, \sigma$$ chosen so that all the information is lost at $$t=T$$, i.e. $$p_T(\mathbf{x}_T \mid \mathbf{x}_0) \approx p_T(\mathbf{x}_T) = \mathcal{N}(\mathbf{0}, \sigma_T^2 I)$$.
+This process can equivalently be written as a Stochastic Differential Equation (SDE):
+
+\begin{equation}
+d\mathbb{x}_t = f(t)\mathbf{x}_t dt + g(t)d W_t, 
+\end{equation}
+
+where $$f, g$$ are scalar functions and $$W$$ is the Wiener process.
+Remarkably, this process is reversible!
+The Reverse SDE <d-cite key="anderson1982reverse"></d-cite> is given by
+
+\begin{equation}\label{eq:rev-sde}
+d\mathbb{x}_t = (f(t)\mathbb{x}_t - g^2(t)\nabla \log p_t(\mathbf{x}_t)) dt + g(t)d \overline{W}_t,
+\end{equation}
+
+where $$\overline{W}$$ is the Wiener process going backwards in time and $$\nabla \log p_t(\mathbf{x}_t)$$ is the *score function*. Since $$p_T$$ is a tractable distribution, we can easily sample $$\mathbf{x}_T \sim p_T$$ and solve \eqref{eq:rev-sde} to generate a sample $$\mathbf{x}_0 \sim p_0$$.
+
+Rather surprisingly, it turns out that there exists an equivalent *deterministic* process <d-cite key="song2021scorebased,song2020denoising"></d-cite> given by an Ordinary Differential Equation (ODE):
+
+\begin{equation}\label{eq:pf-ode}
+d\mathbb{x}_t = (f(t)\mathbb{x}_t - \frac{1}{2}g^2(t)\nabla \log p_t(\mathbf{x}_t)) dt,
+\end{equation}
+
+which is also guaranteed to generate a sample $$\mathbf{x}_0 \sim p_0$$ whenever $$\mathbf{x}_T \sim p_T$$ and the score function is acurately estimated.
+
 ## What is Log-Density?
 
 Log-density, or the log-likelihood of a sample under a generative model, often serves as a proxy for how "typical" or "in-distribution" a sample is. Since diffusion models are likelihood-based models <d-cite key="song2021maximum,kingma2024understanding"></d-cite>, they aim to assign high likelihood to training data and, by extension, low likelihood to out-of-distribution (OOD) data. Intuitively, one might think that log-density is a reliable measure of whether a sample lies in or out of the data distribution.
@@ -53,7 +80,7 @@ $$
 P(\text{shell at } r) \propto r^{D-1} \exp(-r^2 / 2)dr.
 $$
 
-The key insight is that this probability is maximized not at $$ r = 0 $$ (the origin, where density is highest), but at $$ r = \sqrt{D-1} $$. <d-footnote> This is because for \( f(r)= r^{D-1} \exp(-r^2 / 2)\) we have \( f'(r)= r^{D-2} \exp(-r^2/2) (D-1 - r^2) \) </d-footnote>The typical region is the sweet spot, where neither the volume nor the density is too low.
+The key insight is that this probability is maximized not at $$ r = 0 $$ (the origin, where density is highest), but at $$ r = \sqrt{D-1} $$. <d-footnote> This is because for \( f(r)= r^{D-1} \exp(-r^2 / 2)\) we have \( f'(r)= r^{D-2} \exp(-r^2/2) (D-1 - r^2) \), and \( f'(r) > 0 \) for \( r < \sqrt{D-1} \) and \( f'(r) < 0 \) for \( r > \sqrt{D-1} \). </d-footnote>The typical region is the sweet spot, where neither the volume nor the density is too low.
 
 #### Diffusion Models: High-Density Blurry Images vs. High-Volume Detailed Images
 
@@ -102,7 +129,7 @@ An interesting observation <d-cite key="song2021scorebased"></d-cite> is that si
 
 #### Score Alignment
 
-Score alignment measures the angle between the score function at $$t = T$$ (the noise distribution) pushed forward via the flow to $$t = 0$$, and the score function at $$t = 0$$ (the data distribution). If the angle is always acute, scaling the latent code at $$t = T$$ changes $$\log p_0(\mathbf{x}_0)$$ in a monotonic way, explaining the relationship between scaling and image detail.<d-footnote> If the angle is always obtuse, scaling has a reverse effect. </d-footnote> Remarkably, we show that this alignment can be measured without explicitly knowing the score function, see <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite> for the proof and JAX code.
+Score alignment measures the angle between the score function at $$t = T$$ (the noise distribution) pushed forward via the flow to $$t = 0$$, and the score function at $$t = 0$$ (the data distribution). If the angle is always acute, scaling the latent code at $$t = T$$ changes $$\log p_0(\mathbf{x}_0)$$ in a monotonic way, explaining the relationship between scaling and image detail.<d-footnote> If the angle is always obtuse, scaling has a reverse effect, i.e. increasing \( \log p_T(\mathbf{x}_T) \) decreases \( \log p_0(\mathbf{x}_0) \) </d-footnote> Remarkably, we show that this alignment can be measured without explicitly knowing the score function, see <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite> for the proof and JAX code.
 
 <div class='l-body'>
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/density-guidance/sa_vis.png">
