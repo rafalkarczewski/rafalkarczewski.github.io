@@ -23,15 +23,15 @@ Remarkably, this process is reversible!
 The Reverse SDE <d-cite key="anderson1982reverse"></d-cite> is given by
 
 \begin{equation}\label{eq:rev-sde}
-d\mathbb{x}_t = (f(t)\mathbb{x}_t - g^2(t)\nabla \log p_t(\mathbf{x}_t)) dt + g(t)d \overline{W}_t,
+d\mathbf{x}_t = (f(t)\mathbf{x}_t - g^2(t)\nabla \log p_t(\mathbf{x}_t)) dt + g(t)d \overline{W}_t,
 \end{equation}
 
-where $$\overline{W}$$ is the Wiener process going backwards in time and $$\nabla \log p_t(\mathbf{x}_t)$$ is the *score function*. Since $$p_T$$ is a tractable distribution, we can easily sample $$\mathbf{x}_T \sim p_T$$ and solve \eqref{eq:rev-sde} to generate a sample $$\mathbf{x}_0 \sim p_0$$.
+where $$\overline{W}$$ is the Wiener process going backwards in time and $$\nabla \log p_t(\mathbf{x}_t)$$ is the *score function*. Since $$p_T$$ is a tractable distribution, we can easily sample $$\mathbf{x}_T \sim p_T$$ and solve \eqref{eq:rev-sde} to generate a sample $$\mathbf{x}_0 \sim p_0$$ as long as we know the score.
 
 Rather surprisingly, it turns out that there exists an equivalent *deterministic* process <d-cite key="song2021scorebased,song2020denoising"></d-cite> given by an Ordinary Differential Equation (ODE):
 
 \begin{equation}\label{eq:pf-ode}
-d\mathbb{x}_t = (f(t)\mathbb{x}_t - \frac{1}{2}g^2(t)\nabla \log p_t(\mathbf{x}_t)) dt,
+d\mathbf{x}_t = (f(t)\mathbf{x}_t - \frac{1}{2}g^2(t)\nabla \log p_t(\mathbf{x}_t)) dt,
 \end{equation}
 
 which is also guaranteed to generate a sample $$\mathbf{x}_0 \sim p_0$$ whenever $$\mathbf{x}_T \sim p_T$$ and the score function is acurately estimated.
@@ -105,7 +105,7 @@ To measure log-density in diffusion models, it’s important to understand diffe
    - Stochastic sampling uses noisy trajecotories given by SDEs.
 
 2. **Original Dynamics vs Modified Dynamics**:
-   - Sampling can follow the original dynamics dictated by PF-ODE or Rev-SDE.
+   - Sampling can follow the original dynamics dictated by \eqref{eq:pf-ode} or \eqref{eq:rev-sde}.
    - Alternatively, one can modify the dynamics to control specific properties, such as the log-density trajectory.
 
 We summarize these in the table below:
