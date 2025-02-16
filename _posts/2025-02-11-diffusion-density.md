@@ -55,9 +55,6 @@ The observation that blurry images or cartoon-like drawings have the highest den
 
 #### Probability Density vs. Probability
 
-A helpful analogy is the standard normal Gaussian distribution in high dimensions. Its density is proportional to $$\exp(-\|\mathbf{x}\|^2 / 2) $$ at any $$\mathbf{x} \in \mathbb{R}^D$$, which is the highest at the origin (zero vector).
-However, the origin is actually far from the "typical region" of the distribution. Most samples from a high-dimensional Gaussian are not concentrated near the origin but instead fall in a region at a certain distance from it. Why is that?
-
 The probability of being in a region $$ A $$ is given by the integral of the density over that region:
 
 $$
@@ -70,11 +67,14 @@ $$
 P(A) = c \cdot \text{Vol}(A).
 $$
 
-It is crucial to consider both the density and the volume!
+**It is both the density and the volume that determine probability.**
 
-#### Gaussian Example: High Density but Low Probability at the Origin
+#### A Gaussian example
 
-If we compute the probability of a thin spherical shell at radius $$ r $$ and thickness $$ dr $$, the volume of this shell is proportional to $$ r^{D-1}dr $$, and the probability is given by:
+A helpful analogy is the standard normal Gaussian distribution in high dimensions. Its density is proportional to $$\exp(-\|\mathbf{x}\|^2 / 2) $$ at any $$\mathbf{x} \in \mathbb{R}^D$$, which is the highest at the origin (zero vector).
+However, the origin is actually far from the "typical region" of the distribution. Most samples from a high-dimensional Gaussian are not concentrated near the origin but instead fall in a region at a certain distance from it. Why is that?
+
+If we compute the probability of a thin spherical shell (where the Gaussian density is constant) at radius $$ r $$ and thickness $$ dr $$, the volume of this shell is proportional to $$ r^{D-1}dr $$, and the probability is given by:
 
 $$
 P(\text{shell at } r) \propto r^{D-1} \exp(-r^2 / 2)dr.
@@ -86,27 +86,17 @@ The key insight is that this probability is maximized not at $$ r = 0 $$ (the or
 
 A similar principle applies to diffusion models. Although blurry or cartoon-like images occupy regions of high density, the "volume" of such images—i.e., the diversity of possible variations—is much smaller compared to the volume of regions corresponding to detailed, textured images. As a result, diffusion models assign lower log-densities to more detailed images.
 
-<!-- ---
+## How to estimate Log-Density?
 
-<div class='l-body'>
-<img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/density-guidance/gaussian_vs_diffusion.jpg">
-<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Left: In a high-dimensional Gaussian, the highest density occurs at the origin, but the probability mass concentrates in a spherical shell. Right: Similarly, in diffusion models, blurry or cartoon-like images correspond to high-density regions, while detailed images lie in high-probability regions due to their larger volume. </figcaption>
-</div>
-
---- -->
-
-
-## How to Measure Log-Density?
-
-To measure log-density in diffusion models, it’s important to understand different modes of sampling. Broadly, sampling in diffusion models can be categorized into two dimensions:
+To measure log-density of samples from diffusion models, it’s important to understand different modes of sampling. Broadly, sampling in diffusion models can be categorized across two dimensions:
 
 1. **Deterministic vs Stochastic Sampling**:
-   - Deterministic sampling uses smooth trajectories given by ODEs.
-   - Stochastic sampling uses noisy trajecotories given by SDEs.
+   - Deterministic: smooth trajectories given by ODEs.
+   - Stochastic: noisy trajecotories given by SDEs.
 
 2. **Original Dynamics vs Modified Dynamics**:
-   - Sampling can follow the original dynamics dictated by \eqref{eq:rev-sde} or \eqref{eq:pf-ode}.
-   - Alternatively, one can modify the dynamics to control specific properties, such as the log-density trajectory.
+   - Following original dynamics dictated by \eqref{eq:rev-sde} or \eqref{eq:pf-ode}.
+   - Following some arbitrary dynamics.
 
 We summarize these in the table below:
 
@@ -119,13 +109,15 @@ Previously, log-density was only measurable for deterministic sampling with orig
 In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we further generalize this to stochastic sampling with modified dynamics, deriving the evolution of log-density using the general **Itô's Lemma** and the **Fokker-Planck equation**.
 One can see that since stochastic trajectories are a strict generalization of determinic ones (vanishing diffusion term), the method for log-density estimation for any stochastic trajectory is a strict generalization of all the other ones.
 
+In the next section we show that the ability to estimate log-density under any dynamics allows for controlling it.
+
 ## How to Control Log-Density?
 
 An interesting observation <d-cite key="song2021scorebased"></d-cite> is that simply rescaling the latent code (e.g., scaling the noise at the start of the sampling process) changes the amount of detail in the generated image. In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we provide a theoretical explanation for this phenomenon using a concept we call Score Alignment, which directly ties the scaling of the latent code to changes in log-density.
 
 #### Score Alignment
 
-Score alignment measures the angle between the score function at $$t = T$$ (the noise distribution) pushed forward via the flow to $$t = 0$$, and the score function at $$t = 0$$ (the data distribution). If the angle is always acute, scaling the latent code at $$t = T$$ changes $$\log p_0(\mathbf{x}_0)$$ in a monotonic way, explaining the relationship between scaling and image detail.<d-footnote> If the angle is always obtuse, scaling has a reverse effect, i.e. increasing \( \log p_T(\mathbf{x}_T) \) decreases \( \log p_0(\mathbf{x}_0) \) </d-footnote> Remarkably, we show that this alignment can be measured without explicitly knowing the score function, see <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite> for the proof and JAX code.
+Score alignment measures the angle between the score function at $$t = T$$ (the noise distribution) pushed forward via PF-ODE \eqref{eq:pf-ode} to $$t = 0$$, and the score function at $$t = 0$$ (the data distribution). If the angle is always acute, scaling the latent code at $$t = T$$ changes $$\log p_0(\mathbf{x}_0)$$ in a monotonic way, explaining the relationship between scaling and image detail.<d-footnote> If the angle is always obtuse, scaling has a reverse effect, i.e. increasing \( \log p_T(\mathbf{x}_T) \) decreases \( \log p_0(\mathbf{x}_0) \) </d-footnote> Remarkably, we show that this alignment can be measured without explicitly knowing the score function, see <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite> for the proof and JAX code.
 
 <div class='l-body'>
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/density-guidance/sa_vis.png">
