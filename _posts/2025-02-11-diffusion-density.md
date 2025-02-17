@@ -256,7 +256,7 @@ where
 
 $$
 \begin{equation}\label{eq:stochastic-guidance-general}
-\mathbf{u}^{\text{DG-SDE}}_t(\mathbf{x}) = \mathbf{u}^{{\rm {\small DG}\text{-}{\small ODE}}}_t(\mathbf{x})+ \underbrace{\frac{1}{2}\varphi^2(t)\frac{\Delta \log p_t(\mathbf{x})}{\| \nabla \log p_t(\mathbf{x}) \|^2}\nabla \log p_t(\mathbf{x})}_{\text{correction for added stochasticity}}
+\mathbf{u}^{\text{DG-SDE}}_t(\mathbf{x}) = \mathbf{u}^{{\small \text{DG-ODE}}}_t(\mathbf{x})+ \underbrace{\frac{1}{2}\varphi^2(t)\frac{\Delta \log p_t(\mathbf{x})}{\| \nabla \log p_t(\mathbf{x}) \|^2}\nabla \log p_t(\mathbf{x})}_{\text{correction for added stochasticity}}
 \end{equation}
 $$
 
