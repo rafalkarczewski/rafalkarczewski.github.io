@@ -17,20 +17,20 @@ pretty_table: true
     <div><a href="#what-is-log-density">What is Log-Density?</a></div>
     <ul>
       <li><a href="#why-does-this-happen">Why Does This Happen?</a></li>
-      <ul>
+      <!-- <ul>
          <li><a href="#probability-density-vs-probability">Probability Density vs. Probability</a></li>
          <li><a href="#a-gaussian-example">A Gaussian example</a></li>
          <li><a href="#diffusion-models-high-density-blurry-images-vs-high-volume-detailed-images">Diffusion Models: High-Density Blurry Images vs. High-Volume Detailed Images</a></li>
-      </ul>
+      </ul> -->
     </ul>
     <div><a href="#how-to-esimate-log-density">How to estimate Log-Density?</a></div>
     <div><a href="#how-to-control-log-density">How to Control Log-Density?</a></div>
     <ul>
       <li><a href="#score-alignment">Score Alignment</a></li>
       <li><a href="#density-guidance-a-principled-approach-to-controlling-log-density">Density Guidance: A Principled Approach to Controlling Log-Density</a></li>
-      <ul>
+      <!-- <ul>
          <li><a href="#choosing-the-guiding-function">Choosing the guiding function</a></li>
-      </ul>
+      </ul> -->
       <li><a href="#stochastic-sampling-with-density-guidance">Stochastic Sampling with Density Guidance</a></li>
     </ul>
     <div><a href="#conclusion">Conclusion</a></div>
