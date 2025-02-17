@@ -58,7 +58,7 @@ d\mathbf{x}_t = (f(t)\mathbf{x}_t - g^2(t)\nabla \log p_t(\mathbf{x}_t)) dt + g(
 where $$\overline{W}$$ is the Wiener process going backwards in time and $$\nabla \log p_t(\mathbf{x}_t)$$ is the *score function*, which can be accurately approximated with a neural network <d-cite key="hyvarinen2005estimation,vincent2011connection,song2020sliced"></d-cite>.
 Since $$p_T$$ is a tractable distribution, we can easily sample $$\mathbf{x}_T \sim p_T$$ and solve \eqref{eq:rev-sde} to generate a sample $$\mathbf{x}_0 \sim p_0$$.
 
-Rather surprisingly, it turns out that there exists an equivalent *deterministic* process <d-cite key="song2021scorebased,song2020denoising"></d-cite> given by an Ordinary Differential Equation (ODE):
+Rather surprisingly, it turns out that there exists an equivalent *deterministic* process <d-cite key="song2021scorebased,song2020denoising"></d-cite> given by an Probability-Flow Ordinary Differential Equation (PF-ODE):
 
 \begin{equation}\label{eq:pf-ode}
 d\mathbf{x}_t = (f(t)\mathbf{x}_t - \frac{1}{2}g^2(t)\nabla \log p_t(\mathbf{x}_t)) dt,
@@ -124,7 +124,7 @@ To measure log-density of samples from diffusion models, it’s important to und
 
 1. **Deterministic vs Stochastic Sampling**:
    - Deterministic: smooth trajectories given by ODEs.
-   - Stochastic: noisy trajecotories given by SDEs.
+   - Stochastic: noisy trajectories given by SDEs.
 
 2. **Original Dynamics vs Modified Dynamics**:
    - Following original dynamics dictated by \eqref{eq:rev-sde} or \eqref{eq:pf-ode}.
@@ -235,7 +235,7 @@ $$
 
 <div class='l-body'>
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/density-guidance/deterministic-steering.jpg">
-<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Density guidance enables control over image detail. Samples geneared with the pretrained EDM2 model <d-cite key="karras2024analyzing"></d-cite> using \eqref{eq:quantile-score-scaling} with different values of \(q\) </figcaption>
+<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Density guidance enables control over image detail. Samples generated with the pretrained EDM2 model <d-cite key="karras2024analyzing"></d-cite> using \eqref{eq:quantile-score-scaling} with different values of \(q\) </figcaption>
 </div>
 
 **Take-home:** *Density Guidance modifies the PF-ODE by rescaling the score, achieving fine-grained control of log-density over the entire sampling trajectory.*
