@@ -159,8 +159,6 @@ We define:
 * **Original Dynamics**: The sampling process follows either the PF-ODE or Reverse SDE exactly, using the learned score function without modification.
 * **Modified Dynamics**: The sampling process deviates from these standard dynamics by altering the drift or diffusion terms.
 
-### **3. Log-Density Estimation**
-
 Previously, log-density estimation was only available for **deterministic sampling under original dynamics**—i.e., along PF-ODE trajectories <d-cite key="chen2018neural"></d-cite>.
 
 In <d-cite key="karczewski2025diffusion"></d-cite>, we extend log-density estimation in two ways:
@@ -197,10 +195,20 @@ An interesting observation <d-cite key="song2021scorebased"></d-cite> is that si
 ### Score Alignment
 
 Score alignment measures the angle between:
-* The score function at $$t = T$$ (the noise distribution) pushed forward via PF-ODE \eqref{eq:pf-ode} to $$t = 0$$, and
-* The score function at $$t = 0$$ (the data distribution).
+* $$\nabla \log p_T(\mathbf{x}_T)$$ (score of noise distribution) pushed forward via the flow of PF-ODE \eqref{eq:pf-ode} to $$t = 0$$, and
+* $$\nabla \log p_0(\mathbf{x}_0)$$ (score of data distribution).
 
-If the angle is always acute, scaling the latent code at $$t = T$$ changes $$\log p_0(\mathbf{x}_0)$$ in a monotonic way, explaining the relationship between scaling and image detail.<d-footnote> If the angle is always obtuse, scaling has a reverse effect, i.e. increasing \( \log p_T(\mathbf{x}_T) \) decreases \( \log p_0(\mathbf{x}_0) \) </d-footnote> Remarkably, we show that this alignment can be measured without explicitly knowing the score function, see <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite> for the proof and implementation.
+Let's clarify what we mean by the ["push forward"](https://en.wikipedia.org/wiki/Pushforward_(differential)). Suppose we have a curve $$\gamma$$ passing through $$\mathbf{x}_T$$, with velocity $$\nabla \log p_T(\mathbf{x}_T)$$, i.e. $$\gamma(0)=\mathbf{x}_T$$ and $$\gamma'(0)=\nabla \log p_T(\mathbf{x}_T)$$.
+
+The pushforward of $$\nabla \log p_T(\mathbf{x}_T)$$ via a map $$F$$ is simply the tangent vector of the mapped curve, that is:
+
+$$
+\frac{d}{ds} F(\gamma(s)) \bigg\rvert_{s=0}.
+$$
+
+In our case, $$F$$ is the solution map of the PF-ODE, which maps an initial noise sample $$\mathbf{x}_T$$ to a final generated sample $$\mathbf{x}_0$$. Thus, the pushforward describes tangent vectors evolve under the PF-ODE.
+
+If the angle is always acute (less than $$90^{\circ}$$), scaling the latent code at $$t = T$$ changes $$\log p_0(\mathbf{x}_0)$$ in a monotonic way, explaining the relationship between scaling and image detail.<d-footnote> If the angle is always obtuse (more than \(90^{\circ}\)), scaling has the reverse effect, i.e. increasing \( \log p_T(\mathbf{x}_T) \) decreases \( \log p_0(\mathbf{x}_0) \) </d-footnote> Remarkably, we show that this **alignment can be measured without knowing the score function**, see <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite> for the proof and implementation.
 
 <div class='l-body'>
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/density-guidance/sa_vis.png">
