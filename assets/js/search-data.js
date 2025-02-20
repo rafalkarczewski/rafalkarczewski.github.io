@@ -34,7 +34,7 @@ ninja.data = [{
       
         title: "Understanding Likelihood in Diffusion Models",
       
-      description: "A summary of our two recent articles on estimating and controling likelihood in diffusion models.",
+      description: "A summary of our two recent articles on estimating and controlling likelihood in diffusion models.",
       section: "Posts",
       handler: () => {
         
