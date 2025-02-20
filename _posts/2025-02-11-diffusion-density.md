@@ -245,7 +245,7 @@ In practice, this formula is most relevant to diffusion models because we alread
 This is why in the following sections we assume the diffusion model with $$\mathbf{u}_t$$ given by \eqref{eq:pf-ode}.
 The same framework can be used for any continuous-time flow model, provided the score is known.
 
-#### How to choose \(b_t\)?
+**How to choose** $$b_t$$?
 
 While density guidance theoretically allows arbitrary changes to log-density, practical constraints must be considered. Log-density changes that are too large or too small can lead to samples falling outside the typical regions of the data distribution. To address this, we leverage an observation that the following term:
 
