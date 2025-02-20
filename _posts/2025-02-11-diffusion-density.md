@@ -2,7 +2,7 @@
 layout: distill
 title: Understanding Likelihood in Diffusion Models
 date: 2025-02-11 10:25:00
-description: A summary of our two recent articles on estimating and controling likelihood in diffusion models.
+description: A summary of our two recent articles on estimating and controlling likelihood in diffusion models.
 bibliography: blogs.bib
 related_publications: true
 hidden: true
@@ -123,7 +123,7 @@ $$
 A helpful analogy is the standard normal Gaussian distribution in high dimensions. Its density is proportional to $$\exp(-\|\mathbf{x}\|^2 / 2) $$ at any $$\mathbf{x} \in \mathbb{R}^D$$, which is the highest at the origin $$\mathbf{x}=\mathbf{0}$$.
 However, the origin is actually far from the "typical region" of the distribution. Most samples from a high-dimensional Gaussian are not concentrated near the origin but instead fall in a region at a certain distance from it. Why is that?
 
-Consider the probability of $$X$$ being in a thin spherical shell (where the Gaussian density is constant) at radius $$ r $$ and thickness $$ dr $$, the volume of this shell is proportional to $$ r^{D-1}dr $$, and the probability is given by:
+Consider the probability of $$X$$ being in a thin spherical shell (where the Gaussian density is constant) at radius $$ r $$ and thickness $$ dr $$. The volume of this shell is proportional to $$ r^{D-1}dr $$, and the probability is given by:
 
 $$
 P(X \in \text{shell at } r) \propto r^{D-1} \exp(-r^2 / 2)dr.
@@ -245,7 +245,7 @@ In practice, this formula is most relevant to diffusion models because we alread
 This is why in the following sections we assume the diffusion model with $$\mathbf{u}_t$$ given by \eqref{eq:pf-ode}.
 The same framework can be used for any continuous-time flow model, provided the score is known.
 
-#### Choosing the guiding function
+#### How to choose \(b_t\)?
 
 While density guidance theoretically allows arbitrary changes to log-density, practical constraints must be considered. Log-density changes that are too large or too small can lead to samples falling outside the typical regions of the data distribution. To address this, we leverage an observation that the following term:
 
@@ -305,7 +305,7 @@ $$
 \end{equation}
 $$
 
-and
+with $$\mathbf{u}^{\text{DG-ODE}}$$ defined in \eqref{eq:dgs} and
 
 $$
 \begin{equation}
