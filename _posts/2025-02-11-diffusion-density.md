@@ -100,7 +100,7 @@ These surprising observations underscore the difference between maximum-density 
 
 <div class='l-body'>
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/density-guidance/cats_logp.jpg">
-<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Likelihood measures the amount of detail in an image. Sample generated with a StableDiffusion v2.1 <d-cite key="rombach2021highresolution"></d-cite> using the High-Density sampler from <d-cite key="karczewski2025diffusion"></d-cite> </figcaption>
+<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Likelihood measures the amount of detail in an image. Sample generated with a StableDiffusion v2.1 <d-cite key="rombach2021highresolution"></d-cite> using the High-Density sampler <d-cite key="karczewski2025diffusion"></d-cite> </figcaption>
 </div>
 
 ### Why Does This Happen?
