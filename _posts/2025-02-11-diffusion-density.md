@@ -41,7 +41,7 @@ In this post, we dive into insights from our two recent works on diffusion model
 
 <div class='l-body'>
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/density-guidance/blog-post-fig-1-labeled.jpg">
-<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Density guidance <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite> allows for contrlling image detail.</figcaption>
+<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Density guidance <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite> allows for controling image detail.</figcaption>
 </div>
 
 ## Diffusion models recap
@@ -65,7 +65,7 @@ d\mathbf{x}_t = (f(t)\mathbf{x}_t - g^2(t)\nabla \log p_t(\mathbf{x}_t)) dt + g(
 where $$\overline{W}$$ is the Wiener process going backwards in time and $$\nabla \log p_t(\mathbf{x}_t)$$ is the *score function*, which can be accurately approximated with a neural network <d-cite key="hyvarinen2005estimation,vincent2011connection,song2020sliced"></d-cite>.
 Since $$p_T$$ is a tractable distribution, we can easily sample $$\mathbf{x}_T \sim p_T$$ and solve \eqref{eq:rev-sde} to generate a sample $$\mathbf{x}_0 \sim p_0$$.
 
-Rather surprisingly, it turns out that there exists an equivalent *deterministic* process <d-cite key="song2021scorebased,song2020denoising"></d-cite> given by an Probability-Flow Ordinary Differential Equation (PF-ODE):
+Rather surprisingly, it turns out that there exists an equivalent *deterministic* process <d-cite key="song2021scorebased,song2020denoising"></d-cite> given by a Probability-Flow Ordinary Differential Equation (PF-ODE):
 
 \begin{equation}\label{eq:pf-ode}
 d\mathbf{x}_t = (f(t)\mathbf{x}_t - \frac{1}{2}g^2(t)\nabla \log p_t(\mathbf{x}_t)) dt \qquad \mathbf{x}_T \sim p_T,
@@ -331,7 +331,7 @@ $$
 \frac{d}{ds} F(\gamma(s)) \bigg\rvert_{s=0}.
 $$
 
-In our case, $$F$$ is the solution map of the PF-ODE, which maps an initial noise sample $$\mathbf{x}_T$$ to a final generated sample $$\mathbf{x}_0$$. Thus, the pushforward describes how tangent vectors evolve under the PF-ODE.
+In our case, $$F$$ is the solution map of the PF-ODE, which maps an initial noise sample $$\mathbf{x}_T$$ to a final generated sample $$\mathbf{x}_0$$ by solving \eqref{eq:pf-ode}. Thus, the pushforward describes how tangent vectors evolve under the PF-ODE.
 
 If the angle is always acute (less than $$90^{\circ}$$), scaling the latent code at $$t = T$$ changes $$\log p_0(\mathbf{x}_0)$$ in a monotonic way, explaining the relationship between scaling and image detail.<d-footnote> If the angle is always obtuse (more than \(90^{\circ}\)), scaling has the reverse effect, i.e. increasing \( \log p_T(\mathbf{x}_T) \) decreases \( \log p_0(\mathbf{x}_0) \) </d-footnote> Remarkably, we show that this **alignment can be measured without knowing the score function**, see <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite> for the proof and implementation.
 
