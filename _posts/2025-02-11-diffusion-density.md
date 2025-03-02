@@ -27,12 +27,9 @@ pretty_table: true
     <div><a href="#how-to-esimate-log-density">How to estimate Log-Density?</a></div>
     <div><a href="#how-to-control-log-density">How to Control Log-Density?</a></div>
     <ul>
-      <li><a href="#score-alignment">Score Alignment</a></li>
       <li><a href="#density-guidance-a-principled-approach-to-controlling-log-density">Density Guidance: A Principled Approach to Controlling Log-Density</a></li>
-      <!-- <ul>
-         <li><a href="#choosing-the-guiding-function">Choosing the guiding function</a></li>
-      </ul> -->
       <li><a href="#stochastic-sampling-with-density-guidance">Stochastic Sampling with Density Guidance</a></li>
+      <li><a href="#score-alignment">Score Alignment</a></li>
     </ul>
     <div><a href="#conclusion">Conclusion</a></div>
   </nav>
@@ -195,36 +192,9 @@ In the next section, we show how this ability to estimate log-density under any 
 
 ## How to Control Log-Density?
 
-An interesting observation <d-cite key="song2021scorebased"></d-cite> is that simply rescaling the latent code (e.g., scaling the noise at the start of the sampling process) changes the amount of detail in the generated image. In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we provide a theoretical explanation for this phenomenon using a concept we call Score Alignment, which directly ties the scaling of the latent code to changes in log-density.
-
-### Score Alignment
-
-Score alignment measures the angle between:
-* $$\nabla \log p_T(\mathbf{x}_T)$$ (score of noise distribution) pushed forward via the flow of PF-ODE \eqref{eq:pf-ode} to $$t = 0$$, and
-* $$\nabla \log p_0(\mathbf{x}_0)$$ (score of data distribution).
-
-Let's clarify what we mean by the ["push forward"](https://en.wikipedia.org/wiki/Pushforward_(differential)). Suppose we have a curve $$\gamma$$ passing through $$\mathbf{x}_T$$, with velocity $$\nabla \log p_T(\mathbf{x}_T)$$, i.e. $$\gamma(0)=\mathbf{x}_T$$ and $$\gamma'(0)=\nabla \log p_T(\mathbf{x}_T)$$.
-
-The pushforward of $$\nabla \log p_T(\mathbf{x}_T)$$ via a map $$F$$ is simply the tangent vector of the mapped curve, that is:
-
-$$
-\frac{d}{ds} F(\gamma(s)) \bigg\rvert_{s=0}.
-$$
-
-In our case, $$F$$ is the solution map of the PF-ODE, which maps an initial noise sample $$\mathbf{x}_T$$ to a final generated sample $$\mathbf{x}_0$$. Thus, the pushforward describes how tangent vectors evolve under the PF-ODE.
-
-If the angle is always acute (less than $$90^{\circ}$$), scaling the latent code at $$t = T$$ changes $$\log p_0(\mathbf{x}_0)$$ in a monotonic way, explaining the relationship between scaling and image detail.<d-footnote> If the angle is always obtuse (more than \(90^{\circ}\)), scaling has the reverse effect, i.e. increasing \( \log p_T(\mathbf{x}_T) \) decreases \( \log p_0(\mathbf{x}_0) \) </d-footnote> Remarkably, we show that this **alignment can be measured without knowing the score function**, see <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite> for the proof and implementation.
-
-<div class='l-body'>
-<img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/density-guidance/sa_vis.jpg">
-<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Score Alignment is a condition that guarantees monotonic impact of scaling the latent code on the log-density of the decoded sample. It is tractable to verify in practice, even without knowing the score function. Empirically we verify that it almost always holds for diffusion models on image data. </figcaption>
-</div>
-
-**Take-home:** *If SA holds, simply rescaling the latent noise $$\mathbf{x}_T$$ is a quick way to increase or decrease the final log-density (and thus control image detail).*
-
 ### Density Guidance: A Principled Approach to Controlling Log-Density
 
-While latent code scaling provides a way to control image detail, it lacks precision. In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we propose **Density Guidance**, a more precise way to guide how $$\log p_t(\mathbf{x}_t)$$ evolves during sampling. We start from a general flow model
+In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we propose **Density Guidance**, a precise way to guide how $$\log p_t(\mathbf{x}_t)$$ evolves during sampling. We start from a general flow model
 
 $$
 d\mathbf{x}_t=\mathbf{u}_t(\mathbf{x}_t)dt
@@ -344,6 +314,33 @@ Our method ensures that the log-density evolution remains consistent with the de
 </div>
 
 **Take-home:** *Stochastic Density Guidance = same rescaled score approach, plus a projected noise term that preserves the intended log-density schedule.*
+
+An interesting observation <d-cite key="song2021scorebased"></d-cite> is that simply rescaling the latent code (e.g., scaling the noise at the start of the sampling process) changes the amount of detail in the generated image. In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we provide a theoretical explanation for this phenomenon using a concept we call Score Alignment, which directly ties the scaling of the latent code to changes in log-density.
+
+### Score Alignment
+
+Score alignment measures the angle between:
+* $$\nabla \log p_T(\mathbf{x}_T)$$ (score of noise distribution) pushed forward via the flow of PF-ODE \eqref{eq:pf-ode} to $$t = 0$$, and
+* $$\nabla \log p_0(\mathbf{x}_0)$$ (score of data distribution).
+
+Let's clarify what we mean by the ["push forward"](https://en.wikipedia.org/wiki/Pushforward_(differential)). Suppose we have a curve $$\gamma$$ passing through $$\mathbf{x}_T$$, with velocity $$\nabla \log p_T(\mathbf{x}_T)$$, i.e. $$\gamma(0)=\mathbf{x}_T$$ and $$\gamma'(0)=\nabla \log p_T(\mathbf{x}_T)$$.
+
+The pushforward of $$\nabla \log p_T(\mathbf{x}_T)$$ via a map $$F$$ is simply the tangent vector of the mapped curve, that is:
+
+$$
+\frac{d}{ds} F(\gamma(s)) \bigg\rvert_{s=0}.
+$$
+
+In our case, $$F$$ is the solution map of the PF-ODE, which maps an initial noise sample $$\mathbf{x}_T$$ to a final generated sample $$\mathbf{x}_0$$. Thus, the pushforward describes how tangent vectors evolve under the PF-ODE.
+
+If the angle is always acute (less than $$90^{\circ}$$), scaling the latent code at $$t = T$$ changes $$\log p_0(\mathbf{x}_0)$$ in a monotonic way, explaining the relationship between scaling and image detail.<d-footnote> If the angle is always obtuse (more than \(90^{\circ}\)), scaling has the reverse effect, i.e. increasing \( \log p_T(\mathbf{x}_T) \) decreases \( \log p_0(\mathbf{x}_0) \) </d-footnote> Remarkably, we show that this **alignment can be measured without knowing the score function**, see <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite> for the proof and implementation.
+
+<div class='l-body'>
+<img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/density-guidance/sa_vis.jpg">
+<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Score Alignment is a condition that guarantees monotonic impact of scaling the latent code on the log-density of the decoded sample. It is tractable to verify in practice, even without knowing the score function. Empirically we verify that it almost always holds for diffusion models on image data. </figcaption>
+</div>
+
+**Take-home:** *If SA holds, simply rescaling the latent noise $$\mathbf{x}_T$$ is a quick way to increase or decrease the final log-density (and thus control image detail).*
 
 ## Conclusion
 
