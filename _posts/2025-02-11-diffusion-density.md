@@ -44,7 +44,7 @@ In this post, we dive into insights from our two recent works on diffusion model
 
 <div class='l-body'>
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/density-guidance/blog-post-fig-1-labeled.jpg">
-<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Negative loglikelihood measures the amount of detail in the image.</figcaption>
+<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Density guidance <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite> allows for contrlling image detail.</figcaption>
 </div>
 
 ## Diffusion models recap
