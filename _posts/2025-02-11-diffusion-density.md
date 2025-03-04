@@ -115,7 +115,7 @@ $$
 If the density is constant (and equal to $$c$$) within $$ A $$, then the probability equals the product of the density and the volume of $$A $$: 
 
 $$
-P(X \in A) = \int_{A} c d\mathbf{x} = c \cdot \underbrace{\int_{A} d\mathbf{x}}_{\text{``How big is } A\text{?"}} = c \cdot \text{Vol}(A),
+P(X \in A) = \int_{A} c d\mathbf{x} = c \cdot \underbrace{\int_{A} d\mathbf{x}}_{\text{"How big is } A\text{?"}} = c \cdot \text{Vol}(A),
 $$
 
 where $\text{Vol}$ is the [volume](https://en.wikipedia.org/wiki/Lebesgue_measure), i.e. the generalization of length in 1D, area in 2D, and regular volume in 3D.
@@ -129,7 +129,7 @@ Intuitively, it is a notion of "how big is the set $$A$$?".
 A helpful analogy is the standard normal Gaussian distribution in high dimensions. Its density is radial and proportional to $$\exp(-\|\mathbf{x}\|^2 / 2) $$ at any $$\mathbf{x} \in \mathbb{R}^D$$, which is the highest at the origin $$\mathbf{x}=\mathbf{0}$$.
 However, the origin is actually far from the "typical region" of the distribution. Most samples from a high-dimensional Gaussian are not concentrated near the origin but instead fall in a region at a certain distance from it. Why is that?
 
-Consider the probability of $$X$$ being in a thin spherical shell (where the Gaussian density is constant) at radius $$ r $$ and thickness $$ dr $$. The [volume of this shell](https://en.wikipedia.org/wiki/Volume_of_an_n-ball) is proportional to $$ r^{D-1}dr $$, and the probability is given by:
+Consider the probability of $$X$$ being in a thin spherical shell (where the Gaussian density is constant) at radius $$ r $$ and thickness $$ dr $$. The [volume of this shell](https://en.wikipedia.org/wiki/N-sphere#Volume_and_area) is proportional to $$ r^{D-1}dr $$, and the probability is given by:
 
 $$
 P(X \in \text{shell at } r) \propto r^{D-1} \exp(-r^2 / 2)dr.
