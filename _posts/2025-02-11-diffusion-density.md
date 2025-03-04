@@ -115,23 +115,27 @@ $$
 If the density is constant (and equal to $$c$$) within $$ A $$, then the probability equals the product of the density and the volume of $$A $$: 
 
 $$
-P(X \in A) = c \cdot \text{Vol}(A).
+P(X \in A) = \int_{A} c d\mathbf{x} = c \cdot \underbrace{\int_{A} d\mathbf{x}}_{\text{``How big is } A\text{?"}} = c \cdot \text{Vol}(A),
 $$
+
+where $\text{Vol}$ is the [volume](https://en.wikipedia.org/wiki/Lebesgue_measure), i.e. the generalization of length in 1D, area in 2D, and regular volume in 3D.
+Intuitively, it is a notion of "how big is the set $$A$$?".
+
 
 **It is both the density and the volume that determine probability.**
 
 #### A Gaussian example
 
-A helpful analogy is the standard normal Gaussian distribution in high dimensions. Its density is proportional to $$\exp(-\|\mathbf{x}\|^2 / 2) $$ at any $$\mathbf{x} \in \mathbb{R}^D$$, which is the highest at the origin $$\mathbf{x}=\mathbf{0}$$.
+A helpful analogy is the standard normal Gaussian distribution in high dimensions. Its density is radial and proportional to $$\exp(-\|\mathbf{x}\|^2 / 2) $$ at any $$\mathbf{x} \in \mathbb{R}^D$$, which is the highest at the origin $$\mathbf{x}=\mathbf{0}$$.
 However, the origin is actually far from the "typical region" of the distribution. Most samples from a high-dimensional Gaussian are not concentrated near the origin but instead fall in a region at a certain distance from it. Why is that?
 
-Consider the probability of $$X$$ being in a thin spherical shell (where the Gaussian density is constant) at radius $$ r $$ and thickness $$ dr $$. The volume of this shell is proportional to $$ r^{D-1}dr $$, and the probability is given by:
+Consider the probability of $$X$$ being in a thin spherical shell (where the Gaussian density is constant) at radius $$ r $$ and thickness $$ dr $$. The [volume of this shell](https://en.wikipedia.org/wiki/Volume_of_an_n-ball) is proportional to $$ r^{D-1}dr $$, and the probability is given by:
 
 $$
 P(X \in \text{shell at } r) \propto r^{D-1} \exp(-r^2 / 2)dr.
 $$
 
-The key insight is that this probability is maximized not at $$ r = 0 $$ (the origin, where density is highest), but at $$ r = \sqrt{D-1} $$. <d-footnote> This is because for \( f(r)= r^{D-1} \exp(-r^2 / 2)\) we have \( f'(r)= r^{D-2} \exp(-r^2/2) (D-1 - r^2) \), and \( f'(r) > 0 \) for \( r < \sqrt{D-1} \) and \( f'(r) < 0 \) for \( r > \sqrt{D-1} \). </d-footnote>The typical region is the sweet spot, where neither the volume nor the density is too low.
+The key insight is that this probability is maximized not at $$ r = 0 $$ (the origin, where density is highest), but at $$ r = \sqrt{D-1} $$. <d-footnote> This is because for \( f(r)= r^{D-1} \exp(-r^2 / 2)\) we have \( f'(r)= r^{D-2} \exp(-r^2/2) (D-1 - r^2) \), and \( f'(r) > 0 \) for \( r < \sqrt{D-1} \) and \( f'(r) < 0 \) for \( r > \sqrt{D-1} \). </d-footnote>The typical region (where most samples are) is the sweet spot, where neither the volume nor the density is too low.
 
 #### Diffusion Models: High-Density Blurry Images vs. High-Volume Detailed Images
 
