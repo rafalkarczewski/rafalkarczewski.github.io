@@ -279,18 +279,19 @@ We show that a carefully chosen $$b_t$$ allows control of the log-density with n
 
 $$
 \begin{equation}\label{eq:dgs}
-\mathbf{u}^{\text{DG-ODE}}_t(\mathbf{x}) = f(t)\mathbf{x} - \frac{1}{2}g^2(t)\eta_t(\mathbf{x})\nabla \log p_t(\mathbf{x}),
+\mathbf{u}^{\text{DG-ODE}}_t(\mathbf{x}) = f(t)\mathbf{x} - \frac{1}{2}g^2(t)\eta_t(\mathbf{x})\nabla \log p_t(\mathbf{x}).
 \end{equation}
 $$
 
-where $$\Phi^{-1}$$ is the quantile function of the standard normal distribution and $$q$$ is a hyperparameter, which increases $$\log p_0(\mathbf{x}_0)$$ for $$q>0.5$$ and decreases for $$q<0.5$$.
 Note that \eqref{eq:dgs} is simply the PF-ODE \eqref{eq:pf-ode} with a rescaled score function <d-footnote> Interestingly, <d-cite key="karras2024guiding"></d-cite> explore scaling up the score function in the pursuit of targeting high-density regions and find resulting images lacking detail. We show that scaling the score function as in \eqref{eq:quantile-score-scaling} enables both controlling the amount of detail in both directions, but the scaling needs to be adaptive both in \(t\) and \( \mathbf{x} \) </d-footnote>  by
 
 $$
 \begin{equation}\label{eq:quantile-score-scaling}
-\eta_t(\mathbf{x})=1 + \frac{\sqrt{2D}\Phi^{-1}(q)}{\| \sigma_t \nabla \log p_t(\mathbf{x}) \|^2}.
+\eta_t(\mathbf{x})=1 + \frac{\sqrt{2D}\Phi^{-1}(q)}{\| \sigma_t \nabla \log p_t(\mathbf{x}) \|^2},
 \end{equation}
 $$
+
+where $$\Phi^{-1}$$ is the quantile function of the standard normal distribution and $$q$$ is a hyperparameter, which increases $$\log p_0(\mathbf{x}_0)$$ for $$q>0.5$$ and decreases for $$q<0.5$$.
 
 <div class='l-body'>
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/density-guidance/deterministic-steering.jpg">
