@@ -200,7 +200,7 @@ Previously, log-density estimation was only available for **deterministic sampli
 
 In <d-cite key="karczewski2025diffusion"></d-cite>, we extend log-density estimation in two ways:
 
-1. **Stochastic Sampling with Original Dynamics:** We derive how log-density evolves along **stochastic Reverse SDE trajectories**. <d-footnote> Interestingly, we prove that, in contrast to the deterministic case, replacing the true score function \( \nabla \log p_t(\mathbf{x}) \) with an estimate \( \mathbf{s}_\theta (\mathbf{x}, t) \) makes the log-density estimation biased. Furthermore, we show that this bias is given by the estimation error of the score function.</d-footnote>
+1. **Stochastic Sampling with Original Dynamics:** We derive how log-density evolves along **stochastic Reverse SDE trajectories**. <d-footnote> Interestingly, we prove that, in contrast to the deterministic case, replacing the true score function \( \nabla \log p_t(\mathbf{x}) \) with an estimate \( \mathbf{s}_\theta (\mathbf{x}, t) \) makes the log-density estimation biased. This bias is given by the estimation error of the score function.</d-footnote>
 2. **Deterministic Sampling with Modified Dynamics:** We show how log-density can be estimated not just for PF-ODE trajectories but for **any deterministic trajectory**.
 
 Finally, in <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we generalize this further:
