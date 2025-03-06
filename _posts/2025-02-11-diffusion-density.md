@@ -78,7 +78,7 @@ which is also guaranteed to generate a sample $$\mathbf{x}_0 \sim p_0$$.
 Diffusion models are typically trained using a score matching objective, which seeks to approximate the score function $$\nabla \log p_t(\mathbf{x})$$ using a neural network $$ \mathbf{s}_\theta(\mathbf{x})$$:
 
 $$
-\begin{equation}
+\begin{equation}\label{eq:sm-obj}
 \mathbb{E}_{t, \mathbf{x}_0, \mathbf{x}_t} \Big[ \lambda(t) \|\mathbf{s}_\theta(\mathbf{x}_t, t) - \nabla \log p_t(\mathbf{x}_t)\|^2 \Big],
 \end{equation}
 $$
@@ -101,6 +101,32 @@ These surprising observations underscore the difference between maximum-density 
 </div>
 
 ### Why Does This Happen?
+
+While we don't have a full understanding of why the blurry and cartoon-like images occupy the highest-density regions, we discuss several factors that might contribute to this phenomenon.
+
+#### Model's Loss Function and Out-of-Distribution Freedom
+
+Diffusion models are trained with variants of the Score-Matching objective \eqref{eq:sm-obj}, meaninig that their loss is optimized only for in-distribution images. However, the model defines the density everywhere, including points outside the distribution which are never seen during training. This gives the model freedom in how it assigns the likelihood to *atypical* samples such as blurry or cartoon-like ones.
+
+#### Information Theory and Compressibility
+
+Information theory suggests that high-likelihood images should be more compressible, which translates to low-detail in the context of images. While the exact role of information theory in this context remains unclear, it aligns well with what we observe: the highest-likelihood images are low-detail, simple, and lacking in complex textures, which makes them look like cartoons or appear blurry.
+
+#### The Density Trade-Off in the Typical Set
+
+The set of realistic images is vast. Some are high-detail, while others are low-detail, but the total number of high-detail images is significantly greater due to their higher number of degrees of freedom. Since probability density must integrate to 1, this forces the model to assign lower likelihood to high-detail images simply because there are so many of them. Consider images of: apple on a plain background versus a tree with countless variations of leaves and grass: both are realistic, but the latter has vastly more possible instances, necessitating a lower individual density per image.
+
+#### The Branching Tree Hypothesis
+
+Recent work <d-cite key="karras2024guiding"></d-cite> suggests that diffusion models learn distributions in a branching tree structure. We hypothesize that at the roots of these trees—where the most likely samples exist—lie the simplest, most compressed forms of images, which manifest as blurry or cartoon-like.
+
+#### High-Dimensional Distributions and Mode "Paradoxes"
+
+Finally, it is important to recognize that the fact that the highest-density points lie outside the typical set is not unusual in high-dimensional probability distributions. A classic example is the standard $$D$$-dimensional Gaussian: its mode is at the origin, but as dimensionality increases, almost all samples are concentrated on a thin spherical shell at radius $$\sqrt{D}$$. Sampling close to the mode (zero vector) has an exponentially vanishing probability as $$D$$ grows <d-cite key="nalisnick2019detecting"></d-cite>. Similarly, in diffusion models, the most frequently sampled (realistic) images form a high-dimensional structure away from the peak density points.
+
+Now that we have a better understanding of what density means in diffusion models, we will now discuss, how it is actually estimated in practice.
+
+<!-- ### Why Does This Happen?
 
 The observation that blurry images or cartoon-like drawings have the highest density in diffusion models seems counterintuitive. Does this imply that the model considers these images to be the "most representative of its training data"? To understand this phenomenon, it is crucial to distinguish between **probability density** and **probability**.
 
@@ -139,7 +165,7 @@ The key insight is that this probability is maximized not at $$ r = 0 $$ (the or
 
 #### Diffusion Models: High-Density Blurry Images vs. High-Volume Detailed Images
 
-A similar principle applies to diffusion models. Although blurry or cartoon-like images occupy regions of high density, the "volume" of such images—i.e., the diversity of possible variations—is much smaller compared to the volume of regions corresponding to detailed, textured images. As a result, diffusion models assign lower log-densities to more detailed images.
+A similar principle applies to diffusion models. Although blurry or cartoon-like images occupy regions of high density, the "volume" of such images—i.e., the diversity of possible variations—is much smaller compared to the volume of regions corresponding to detailed, textured images. As a result, diffusion models assign lower log-densities to more detailed images. -->
 
 ## How to Estimate Log-Density?
 
