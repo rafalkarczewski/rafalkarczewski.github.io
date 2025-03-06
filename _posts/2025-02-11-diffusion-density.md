@@ -191,6 +191,11 @@ We define:
 * **Original Dynamics**: The sampling process follows either the PF-ODE or Reverse SDE exactly, using the learned score function without modification.
 * **Modified Dynamics**: The sampling process deviates from these standard dynamics by altering the drift or diffusion terms.
 
+<div class='l-body'>
+<img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/video/original_vs_modified_dynamics.gif">
+<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Left: The "original" PF-ODE dynamics, where the trajectory follows the vector field. Right: an example of "modified" dynamics, where a trajectory visibly crosses the vector field to bias samples toward higher-likelihood regions.</figcaption>
+</div>
+
 Previously, log-density estimation was only available for **deterministic sampling under original dynamics**—i.e., along PF-ODE trajectories <d-cite key="chen2018neural"></d-cite>.
 
 In <d-cite key="karczewski2025diffusion"></d-cite>, we extend log-density estimation in two ways:
