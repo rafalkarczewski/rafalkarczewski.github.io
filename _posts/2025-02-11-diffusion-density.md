@@ -233,7 +233,7 @@ $$
 \mathcal{J}(\mathbf{x}_T) = \log p_0 (\mathbf{x}_0(\mathbf{x}_T)),
 $$
 
-which can be directly optimized by differentiating through the ODE solver <d-cite key="choi2018waic,nalisnick2018deep,nalisnick2019detecting,ben2024d"></d-cite>. However, this procedure is significantly more expensive than regular sampling, and does not extend easily to stochastic sampling, because in stochastic sampling, the starting point $$\mathbf{x}_T$$ carries very little information about where we end up $$\mathbf{x}_0$$.
+which can be directly optimized by differentiating through the ODE solver <d-cite key="ben2024d"></d-cite>. However, this procedure is significantly more expensive than regular sampling, and does not extend easily to stochastic sampling, because in stochastic sampling, the starting point $$\mathbf{x}_T$$ carries very little information about where we end up $$\mathbf{x}_0$$.
 
 We will discuss how precise density control can be achieved without extra cost by modifying the sampling dynamics.
 
@@ -242,10 +242,10 @@ We will discuss how precise density control can be achieved without extra cost b
 In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we propose **Density Guidance**, a precise way to guide how $$\log p_t(\mathbf{x}_t)$$ evolves during sampling without any extra cost. We start from a general flow model
 
 $$
-d\mathbf{x}_t=\mathbf{u}_t(\mathbf{x}_t)dt
+d\mathbf{x}_t=\mathbf{u}_t(\mathbf{x}_t)dt,
 $$
 
-and we want to enforce
+which we want to modify to enforce
 
 $$
 \begin{equation}\label{eq:logp-b}
@@ -261,8 +261,8 @@ $$
 \end{equation}
 $$
 
-Note that when $$b_t(\mathbf{x}) = -\mathrm{div}\mathbf{u}_t(\mathbf{x})$$, we recover the original dynamics $$\tilde{\mathbf{u}}_t = \mathbf{u}_t$$. 
-For $$$b_t(\mathbf{x}) < -\mathrm{div}\mathbf{u}_t(\mathbf{x})$$, we get a model biased towards higher values of likelihood.
+Note that when $$b_t(\mathbf{x}) = -\operatorname{div}\mathbf{u}_t(\mathbf{x})$$, we recover the original dynamics $$\tilde{\mathbf{u}}_t = \mathbf{u}_t$$. 
+For $$$b_t(\mathbf{x}) < -\operatorname{div}\mathbf{u}_t(\mathbf{x})$$, we get a model biased towards higher values of likelihood.
 In practice, this formula is most relevant to diffusion models because we already have (an approximation of) $$\nabla \log p_t(\mathbf{x})$$. 
 This is why in the following sections we assume the diffusion model with $$\mathbf{u}_t$$ given by \eqref{eq:pf-ode}.
 The same framework can be used for any continuous-time flow model, provided the score is known.
@@ -272,30 +272,13 @@ The same framework can be used for any continuous-time flow model, provided the 
 While density guidance theoretically allows arbitrary changes to log-density, practical constraints must be considered. Log-density changes that are too large or too small can lead to samples falling outside the typical regions of the data distribution. 
 We show that a carefully chosen $$b_t$$ allows control of the log-density with no extra cost, keeps the samples in the typical region, and yields a very simple updated ODE:
 
-<!-- To address this, we leverage an observation that the following term:
-
-$$
-h_t(\mathbf{x}) = \frac{\sigma_t^2 \left(\Delta \log p_t(\mathbf{x}) + \|\nabla \log p_t(\mathbf{x})\|^2\right)}{\sqrt{2D}}
-$$
-
-is approximately $$\mathcal{N}(0, 1)$$ for $$\mathbf{x} \sim p_t$$, where the data dimension $$D$$ is high. This helps determine the "typical" range of log-density changes.
-Based on that, we found that the following is a good choice for $$b_t$$
-
-$$
-\begin{equation}\label{eq:b-quantile}
-    b^q_t(\mathbf{x}) = -\operatorname{div} \mathbf{u}_t(\mathbf{x}) - \frac{1}{2}g^2(t) \frac{\sqrt{2D}}{\sigma_t^2} \Phi^{-1}(q),
-\end{equation}
-$$
-
-$$\Phi^{-1}$$ is the quantile function of the standard normal distribution and $$q$$ is a hyperparameter, which increases $$\log p_0(\mathbf{x}_0)$$ for $$q>0.5$$ and decreases for $$q<0.5$$. This definition of $$b_t$$ leads to the following updated ODE -->
-
 $$
 \begin{equation}\label{eq:dgs}
 \mathbf{u}^{\text{DG-ODE}}_t(\mathbf{x}) = f(t)\mathbf{x} - \frac{1}{2}g^2(t)\eta_t(\mathbf{x})\nabla \log p_t(\mathbf{x}),
 \end{equation}
 $$
 
-where \Phi^{-1}$$ is the quantile function of the standard normal distribution and $$q$$ is a hyperparameter, which increases $$\log p_0(\mathbf{x}_0)$$ for $$q>0.5$$ and decreases for $$q<0.5$$.
+where $$\Phi^{-1}$$ is the quantile function of the standard normal distribution and $$q$$ is a hyperparameter, which increases $$\log p_0(\mathbf{x}_0)$$ for $$q>0.5$$ and decreases for $$q<0.5$$.
 Note that \eqref{eq:dgs} is simply the PF-ODE \eqref{eq:pf-ode} with a rescaled score function <d-footnote> Interestingly, <d-cite key="karras2024guiding"></d-cite> explore scaling up the score function in the pursuit of targeting high-density regions and find resulting images lacking detail. We show that scaling the score function as in \eqref{eq:quantile-score-scaling} enables both controlling the amount of detail in both directions, but the scaling needs to be adaptive both in \(t\) and \( \mathbf{x} \) </d-footnote>  by
 
 $$
