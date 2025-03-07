@@ -232,10 +232,11 @@ We will discuss how precise density control can be achieved without extra cost b
 In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we propose **Density Guidance**, a precise way to guide $$ d\log p_t(\mathbf{x}_t)$$ during sampling without any extra cost. We start from a general flow model
 
 $$
-d\mathbf{x}_t=\mathbf{u}_t(\mathbf{x}_t)dt,
+d\mathbf{x}_t=\mathbf{u}_t(\mathbf{x}_t)dt \qquad \mathbf{x}_T \sim p_T,
 $$
 
-which we want to modify to enforce
+which defines the marginal distributions $$p_t$$.
+We want to find a modified sampling ODE $$ d\mathbf{x}_t=\tilde{\mathbf{u}}_t(\mathbf{x}_t)dt $$ to enforce
 
 $$
 \begin{equation}\label{eq:logp-b}
