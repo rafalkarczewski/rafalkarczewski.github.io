@@ -45,7 +45,7 @@ In this post, we dive into insights from our two recent works on diffusion model
 
 <div class='l-body'>
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/density-guidance/blog-post-fig-1-labeled.jpg">
-<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Density guidance <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite> allows for controling image detail.</figcaption>
+<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Density guidance <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite> allows for controlling image detail.</figcaption>
 </div>
 
 ## Diffusion Models Recap
@@ -60,7 +60,7 @@ d\mathbf{x}_t = f(t)\mathbf{x}_t dt + g(t)d W_t \qquad \mathbf{x}_0 \sim p_0,
 
 where $$f, g$$ are scalar functions and $$W$$ is the Wiener process.
 Remarkably, this process is reversible!
-The Reverse SDE <d-cite key="anderson1982reverse"></d-cite> is given by
+The reverse SDE <d-cite key="anderson1982reverse"></d-cite> is given by
 
 \begin{equation}\label{eq:rev-sde}
 d\mathbf{x}_t = (f(t)\mathbf{x}_t - g^2(t)\nabla \log p_t(\mathbf{x}_t)) dt + g(t)d \overline{W}_t \qquad \mathbf{x}_T \sim p_T,
@@ -95,14 +95,14 @@ Since diffusion models are likelihood-based models, they aim to assign high like
 
 However, prior research <d-cite key="choi2018waic,nalisnick2018deep,nalisnick2019detecting,ben2024d"></d-cite> has shown that generative models can sometimes assign higher likelihoods to OOD data than to in-distribution data. In <d-cite key="karczewski2025diffusion"></d-cite>, we show that diffusion models are no different. In fact, we push this analysis further by exploring the highest-density regions of diffusion models.
 
-We derive a theoretical **mode-tracking ODE** and its efficient approximation - the *high-density* (HD-) sampler, which allows for exploring the regions of high density. Specifically, it is an ODE, which converges to the approximate mode of $$ p_t(\mathbf{x}_0 \mid \mathbf{x}_t)$$ for any starting point $$\mathbf{x}_t$$.
+We derive a theoretical **mode-tracking ODE** and its efficient approximation - the *high-density* (HD) sampler, which allows us to explore the regions of high density. Specifically, it is an ODE, which converges to the approximate mode of $$ p_t(\mathbf{x}_0 \mid \mathbf{x}_t)$$ for any starting point $$\mathbf{x}_t$$.
 
 <div class='l-body'>
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/video/hd_sampling.gif">
 <figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> High-Density ODE sampler on a 1D Gaussian Mixture data starting at different values of \(t\).</figcaption>
 </div>
 
-We use the HD-sampler on image diffusion models to investigate the highest-likelihood regions. Surprisingly, these are occupied by cartoon-like drawings or blurry images—patterns that are absent from the training data. Additionally, we observe a strong correlation between negative log-density and PNG image size, revealing that negative log-likelihood for image data is essentially a measure of **information content** or **detail**, rather than "in-distribution-ness".
+We use the HD-sampler on image diffusion models to investigate the highest-likelihood regions. Surprisingly, these are occupied by cartoon-like drawings or blurry images—patterns that are absent from the training data. Additionally, we observe a strong correlation between negative log-density and PNG image size, revealing that, for image data, negative log-likelihood essentially measures **information content** or **detail**, rather than "in-distribution-ness".
 
 <div class='l-body'>
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/density-guidance/cartoon_blog_fig.jpg">
@@ -115,7 +115,7 @@ While we don't have a full understanding of why the blurry and cartoon-like imag
 
 #### Model's Loss Function and Out-of-Distribution Freedom
 
-Diffusion models are trained with variants of the Score-Matching objective \eqref{eq:sm-obj}, meaning that their loss is optimized only for in-distribution images. However, the model defines the density everywhere, including points outside the distribution which are never seen during training. This gives the model freedom in how it assigns the likelihood to *atypical* samples such as blurry or cartoon-like ones.
+Diffusion models are trained with variants of the score-matching objective \eqref{eq:sm-obj}, meaning that their loss is optimized only for in-distribution images. However, the model defines the density everywhere, including points outside the distribution which are never seen during training. This gives the model freedom in how it assigns the likelihood to *atypical* samples such as blurry or cartoon-like ones.
 
 #### Information Theory and Compressibility
 
@@ -140,47 +140,6 @@ Finally, it is important to recognize that the fact that the highest-density poi
 
 Now that we have a better understanding of what density means in diffusion models, we will now discuss how it is actually estimated in practice.
 
-<!-- ### Why Does This Happen?
-
-The observation that blurry images or cartoon-like drawings have the highest density in diffusion models seems counterintuitive. Does this imply that the model considers these images to be the "most representative of its training data"? To understand this phenomenon, it is crucial to distinguish between **probability density** and **probability**.
-
-#### Probability Density vs. Probability
-
-For a random variable $$X$$ with density $$p$$, the probability of $$X$$ being in a set $$A$$ is given by the integral of the density over that region:
-
-$$
-P(X \in A) = \int_{A} p(\mathbf{x}) d\mathbf{x}.
-$$
-
-If the density is constant (and equal to $$c$$) within $$ A $$, then the probability equals the product of the density and the volume of $$A $$: 
-
-$$
-P(X \in A) = \int_{A} c d\mathbf{x} = c \cdot \underbrace{\int_{A} d\mathbf{x}}_{\text{"How big is } A\text{?"}} = c \cdot \text{Vol}(A),
-$$
-
-where $\text{Vol}$ is the [volume](https://en.wikipedia.org/wiki/Lebesgue_measure), i.e. the generalization of length in 1D, area in 2D, and regular volume in 3D.
-Intuitively, it is a notion of "how big is the set $$A$$?".
-
-
-**It is both the density and the volume that determine probability.**
-
-#### A Gaussian example
-
-A helpful analogy is the standard normal Gaussian distribution in high dimensions. Its density is radial and proportional to $$\exp(-\|\mathbf{x}\|^2 / 2) $$ at any $$\mathbf{x} \in \mathbb{R}^D$$, which is the highest at the origin $$\mathbf{x}=\mathbf{0}$$.
-However, the origin is actually far from the "typical region" of the distribution. Most samples from a high-dimensional Gaussian are not concentrated near the origin but instead fall in a region at a certain distance from it. Why is that?
-
-Consider the probability of $$X$$ being in a thin spherical shell (where the Gaussian density is constant) at radius $$ r $$ and thickness $$ dr $$. The [volume of this shell](https://en.wikipedia.org/wiki/N-sphere#Volume_and_area) is proportional to $$ r^{D-1}dr $$, and the probability is given by:
-
-$$
-P(X \in \text{shell at } r) \propto r^{D-1} \exp(-r^2 / 2)dr.
-$$
-
-The key insight is that this probability is maximized not at $$ r = 0 $$ (the origin, where density is highest), but at $$ r = \sqrt{D-1} $$. <d-footnote> This is because for \( f(r)= r^{D-1} \exp(-r^2 / 2)\) we have \( f'(r)= r^{D-2} \exp(-r^2/2) (D-1 - r^2) \), and \( f'(r) > 0 \) for \( r < \sqrt{D-1} \) and \( f'(r) < 0 \) for \( r > \sqrt{D-1} \). </d-footnote>The typical region (where most samples are) is the sweet spot, where neither the volume nor the density is too low.
-
-#### Diffusion Models: High-Density Blurry Images vs. High-Volume Detailed Images
-
-A similar principle applies to diffusion models. Although blurry or cartoon-like images occupy regions of high density, the "volume" of such images—i.e., the diversity of possible variations—is much smaller compared to the volume of regions corresponding to detailed, textured images. As a result, diffusion models assign lower log-densities to more detailed images. -->
-
 ## How to Estimate Log-Density?
 
 Estimating the log-density of a generated sample $$\mathbf{x}_0$$ boils down to tracking how the marginal log-densities changed over the sampling trajectory:
@@ -194,7 +153,7 @@ Sampling in diffusion models can be categorized along two main axes:
 
 ### **1. Deterministic vs Stochastic Sampling**
 
-Diffusion models generate samples by reversing the forward noising process, which can be done in one of two ways:
+Diffusion models generate samples by reversing the forward noising process in two ways:
 
 - **Deterministic sampling:** Uses smooth, noise-free trajectories of PF-ODE \eqref{eq:pf-ode}.
 - **Stochastic sampling:** Uses noisy trajectories of Reverse SDE \eqref{eq:rev-sde}.
@@ -208,7 +167,7 @@ While deterministic sampling is often preferred for efficiency, stochastic sampl
 
 ### **2. Original vs Modified Dynamics**
 
-Sampling with PF-ODE or the Reverse SDE ensures that each intermediate sample $$\mathbf{x}_t$$ correctly follows the correct distribution $$p_t$$ at every time step. We call this sampling with **"original" dynamics**.
+Sampling with PF-ODE or the Reverse SDE ensures that each intermediate sample $$\mathbf{x}_t$$ correctly follows the correct distribution $$p_t$$ at every time step. We call this sampling with **"original dynamics"**.
 
 However, sticking to the original dynamics does not allow us to influence the likelihood of generated samples at $$t=0$$. As we will see, extending log-density estimation to modified dynamics, where we alter the drift or diffusion terms of the sampling process, enables precise control over $$\log ⁡p_0(\mathbf{x}_0)$$. This is crucial for manipulating image characteristics such as detail and sharpness.
 
@@ -224,8 +183,7 @@ We define:
 
 Previously, $$ d \log p_t(\mathbf{x}_t) $$ was only known for **deterministic sampling under original dynamics**—i.e., along PF-ODE trajectories <d-cite key="chen2018neural"></d-cite>.
 
-In <d-cite key="karczewski2025diffusion"></d-cite>, we provide formulas <d-footnote> The same two formulas were simultaneously and independently discovered by <d-cite key="skreta2025the"></d-cite></d-footnote>
-for $$ d \log p_t(\mathbf{x}_t) $$ for:
+In <d-cite key="karczewski2025diffusion"></d-cite>, we provide formulas for $$ d \log p_t(\mathbf{x}_t) $$ for:<d-footnote> The same two formulas were simultaneously and independently discovered by <d-cite key="skreta2025the"></d-cite></d-footnote>
 
 1. **Stochastic Sampling with Original Dynamics:** We derive how log-density evolves along stochastic Reverse SDE trajectories. <d-footnote> Interestingly, we prove that, in contrast to the deterministic case, replacing the true score function \( \nabla \log p_t(\mathbf{x}) \) with an estimate \( \mathbf{s}_\theta (\mathbf{x}, t) \) makes the log-density estimation biased. This bias is given by the estimation error of the score function.</d-footnote>
 2. **Deterministic Sampling with Modified Dynamics:** We show how log-density can be estimated not just for PF-ODE trajectories but for any deterministic trajectory.
@@ -259,7 +217,7 @@ In the next section, we show how this ability to estimate log-density under any 
 
 ## How to Control Log-Density?
 
-The simplest approach to controlling log-density is to manipulate the latent code. Note that the PF-ODE defines the *solution map* $$\mathbf{x}_T \mapsto \mathbf{x}_0(\mathbf{x_T})$$. One can thus define the objective as a function of tha latent code:
+The simplest approach to controlling log-density is to manipulate the latent code. Note that the PF-ODE defines the *solution map* $$\mathbf{x}_T \mapsto \mathbf{x}_0(\mathbf{x_T})$$. One can thus define the objective as a function of the latent code:
 
 $$
 \mathcal{J}(\mathbf{x}_T) = \log p_0 (\mathbf{x}_0(\mathbf{x}_T)),
@@ -297,7 +255,7 @@ Note that when $$b_t(\mathbf{x}) = -\operatorname{div}\mathbf{u}_t(\mathbf{x})$$
 For $$$b_t(\mathbf{x}) < -\operatorname{div}\mathbf{u}_t(\mathbf{x})$$, we get a model biased towards higher values of likelihood.
 In practice, this formula is most relevant to diffusion models because we already have (an approximation of) $$\nabla \log p_t(\mathbf{x})$$. 
 This is why in the following sections we assume the diffusion model with $$\mathbf{u}_t$$ given by \eqref{eq:pf-ode}.
-The same framework can be used for any continuous-time flow model, provided the score is known.
+The same framework can be used for any continuous-time flow model, provided that the score function is known.
 
 **How to choose** $$b_t$$?
 
@@ -318,7 +276,7 @@ $$
 \end{equation}
 $$
 
-where $$\Phi^{-1}$$ is the quantile function of the standard normal distribution and $$q$$ is a hyperparameter, which increases $$\log p_0(\mathbf{x}_0)$$ for $$q>0.5$$ and decreases for $$q<0.5$$.
+where $$\Phi^{-1}$$ is the quantile function of the standard normal distribution and $$q$$ is a hyperparameter, which increases $$\log p_0(\mathbf{x}_0)$$ for $$q>0.5$$ and decreases it for $$q<0.5$$.
 
 <div class='l-body'>
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/density-guidance/deterministic-steering.jpg">
@@ -329,7 +287,7 @@ where $$\Phi^{-1}$$ is the quantile function of the standard normal distribution
 
 ### Stochastic Sampling with Density Guidance
 
-So far, we’ve discussed controlling log-density in deterministic settings. However, stochastic sampling introduces additional challenges and opportunities. In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we show that, somewhat surprisingly, we can achieve the desired **smooth** evolution of log-density $$d \log p_t(\mathbf{x}_t)=b_t(\mathbf{x}_t)dt$$ even for **stochastic** trajectories given by:<d-footnote>
+So far, we’ve discussed controlling log-density in deterministic settings. However, stochastic sampling introduces additional challenges and opportunities. In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we show that, somewhat surprisingly, we can achieve the desired **smooth** evolution of log-density $$d \log p_t(\mathbf{x}_t)=b_t(\mathbf{x}_t)dt$$ even for **stochastic** trajectories given by<d-footnote>
 Technically, projecting out the score direction also introduces a small extra drift term. Empirically, this term is negligible, so we omit it in experiments. See <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite> for details.
 </d-footnote>
 
@@ -355,7 +313,7 @@ P_t(\mathbf{x}) = I - \left(\frac{\nabla \log p_t(\mathbf{x})}{\| \nabla \log p_
 \end{equation}
 $$
 
-Let's unpack this. We can add noise to the Density Guidance trajectory, but to maintain the desired evolution of log-density, we have to:
+Let's unpack this. We can add noise to the Density Guidance trajectory, but to maintain the desired evolution of log-density, we have to
 * Project the Wiener increment $$d \overline{W}_t$$ with $$P_t$$ onto the subspace orthogonal to the score;
 * Correct the drift for the added stochasticity. To estimate $$\Delta \log p_t(\mathbf{x})=\operatorname{div} \nabla \log p_t(\mathbf{x})$$, we use the Hutchinson trick <d-cite key="hutchinson1989stochastic,grathwohl2018ffjord"></d-cite>
 
@@ -373,7 +331,7 @@ This is particularly useful for balancing detail and variability in generated sa
 - Adding noise early ($$\widetilde{\varphi}(t) \neq 0$$ for large $$t$$) in the sampling process introduces variation in high-level features like shapes.
 - Adding noise later ($$\widetilde{\varphi}(t) \neq 0$$ for small $$t$$) affects only low-level details like texture.
 
-Our method ensures that the log-density evolution remains consistent with the deterministic case, allowing precise control while injecting controlled randomness.
+Our method ensures that the log-density evolution remains consistent with the deterministic Density Guidance, allowing precise control while injecting controlled randomness.
 
 <div class='l-body'>
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/density-guidance/stochastic-steering.jpg">
@@ -409,7 +367,7 @@ If the angle is always acute (less than $$90^{\circ}$$), scaling the latent code
 <figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Score Alignment is a condition that guarantees monotonic impact of scaling the latent code on the log-density of the decoded sample. It is tractable to verify in practice, even without knowing the score function. Empirically we verify that it almost always holds for diffusion models on image data. </figcaption>
 </div>
 
-**Take-home:** *If SA holds, simply rescaling the latent noise $$\mathbf{x}_T$$ is a quick way to increase or decrease the final log-density (and thus control image detail).*
+**Take-home:** *If SA holds, simply rescaling the latent noise $$\mathbf{x}_T$$ provides a quick method for increasing or decreasing the final log-density (and thus controlling image detail).*
 
 ## Conclusion
 
