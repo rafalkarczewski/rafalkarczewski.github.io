@@ -169,7 +169,14 @@ A similar principle applies to diffusion models. Although blurry or cartoon-like
 
 ## How to Estimate Log-Density?
 
-Estimating log-density in diffusion models requires understanding the different ways in which sampling can be performed. Sampling in diffusion models can be categorized along two main axes:
+Estimating the log-density of a generated sample $$\mathbf{x}_0$$ boils down to tracking how the marginal log-densities changed over the sampling trajectory:
+
+$$
+\log p_0(\mathbf{x}_0) = \log p_T (\mathbf{x}_T) - \left( \log p_T(\mathbf{x}_T) - \log p_0(\mathbf{x_0}) \right) = \underbrace{\log p_T(\mathbf{x}_T)}_{\text{known analytically}} + \int_T^0 \underbrace{d\log p_t(\mathbf{x}_t)}_{\text{log-density change}}
+$$
+
+and the log-density change $$d \log p_t(\mathbf{x}_t)$$ depends on how we sample.
+Sampling in diffusion models can be categorized along two main axes:
 
 ### **1. Deterministic vs Stochastic Sampling**
 
