@@ -95,12 +95,10 @@ We derive a theoretical **mode-tracking ODE** and its efficient approximation - 
 
 <div class='l-body'>
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/video/hd_sampling.gif">
-<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> High-Density ODE sampler starting at different values of \(t\).</figcaption>
+<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> High-Density ODE sampler on a 1D Gaussian Mixture data starting at different values of \(t\).</figcaption>
 </div>
 
 We use the HD-sampler on image diffusion models to investigate the highest-likelihood regions. Surprisingly, these are occupied by cartoon-like drawings or blurry images—patterns that are absent from the training data. Additionally, we observe a strong correlation between negative log-density and PNG image size, revealing that negative log-likelihood for image data is essentially a measure of **information content** or **detail**, rather than "in-distribution-ness".
-
-These surprising observations underscore the difference between maximum-density points and typical sets, which we explore next
 
 <div class='l-body'>
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/density-guidance/cats_logp.jpg">
