@@ -102,7 +102,7 @@ We use the HD-sampler on image diffusion models to investigate the highest-likel
 
 <div class='l-body'>
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/density-guidance/cats_logp.jpg">
-<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Likelihood measures the amount of detail in an image. Sample generated with a StableDiffusion v2.1 <d-cite key="rombach2021highresolution"></d-cite> using the High-Density sampler <d-cite key="karczewski2025diffusion"></d-cite> </figcaption>
+<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Likelihood measures the amount of detail in an image. Sample generated with a StableDiffusion v2.1 <d-cite key="rombach2021highresolution"></d-cite> using the High-Density sampler <d-cite key="karczewski2025diffusion"></d-cite>. </figcaption>
 </div>
 
 ### Why Does This Happen?
@@ -218,8 +218,8 @@ Previously, $$ d \log p_t(\mathbf{x}_t) $$ was only known for **deterministic sa
 In <d-cite key="karczewski2025diffusion"></d-cite>, we provide formulas <d-footnote> The same two formulas were simultaneously and independently discovered by <d-cite key="skreta2025the"></d-cite></d-footnote>
 for $$ d \log p_t(\mathbf{x}_t) $$ for:
 
-1. **Stochastic Sampling with Original Dynamics:** We derive how log-density evolves along **stochastic Reverse SDE trajectories**. <d-footnote> Interestingly, we prove that, in contrast to the deterministic case, replacing the true score function \( \nabla \log p_t(\mathbf{x}) \) with an estimate \( \mathbf{s}_\theta (\mathbf{x}, t) \) makes the log-density estimation biased. This bias is given by the estimation error of the score function.</d-footnote>
-2. **Deterministic Sampling with Modified Dynamics:** We show how log-density can be estimated not just for PF-ODE trajectories but for **any deterministic trajectory**.
+1. **Stochastic Sampling with Original Dynamics:** We derive how log-density evolves along stochastic Reverse SDE trajectories. <d-footnote> Interestingly, we prove that, in contrast to the deterministic case, replacing the true score function \( \nabla \log p_t(\mathbf{x}) \) with an estimate \( \mathbf{s}_\theta (\mathbf{x}, t) \) makes the log-density estimation biased. This bias is given by the estimation error of the score function.</d-footnote>
+2. **Deterministic Sampling with Modified Dynamics:** We show how log-density can be estimated not just for PF-ODE trajectories but for any deterministic trajectory.
 
 Finally, in <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we generalize this further to:
 
@@ -258,11 +258,11 @@ $$
 
 which can be directly optimized by differentiating through the ODE solver <d-cite key="ben2024d"></d-cite>. However, this procedure is significantly more expensive than regular sampling, and does not extend easily to stochastic sampling, because in stochastic sampling, the starting point $$\mathbf{x}_T$$ carries very little information about where we end up $$\mathbf{x}_0$$.
 
-We will discuss how precise density control can be achieved without extra cost by modifying the sampling dynamics.
+We will discuss how precise density control can be achieved without extra cost by modifying the sampling dynamics, both deterministic and stochastic.
 
 ### Density Guidance: A Principled Approach to Controlling Log-Density
 
-In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we propose **Density Guidance**, a precise way to guide how $$\log p_t(\mathbf{x}_t)$$ evolves during sampling without any extra cost. We start from a general flow model
+In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we propose **Density Guidance**, a precise way to guide $$ d\log p_t(\mathbf{x}_t)$$ during sampling without any extra cost. We start from a general flow model
 
 $$
 d\mathbf{x}_t=\mathbf{u}_t(\mathbf{x}_t)dt,
@@ -272,7 +272,7 @@ which we want to modify to enforce
 
 $$
 \begin{equation}\label{eq:logp-b}
-\frac{d \log p_t(\mathbf{x}_t)}{d t} = b_t(\mathbf{x}_t)
+d \log p_t(\mathbf{x}_t) = b_t(\mathbf{x}_t)dt
 \end{equation}
 $$
 
@@ -320,7 +320,7 @@ where $$\Phi^{-1}$$ is the quantile function of the standard normal distribution
 
 ### Stochastic Sampling with Density Guidance
 
-So far, we’ve discussed controlling log-density in deterministic settings. However, stochastic sampling introduces additional challenges and opportunities. In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we show that, somewhat surprisingly, we can achieve the desired **smooth** evolution of log-density $$\frac{d \log p_t(\mathbf{x}_t)}{dt}=b_t(\mathbf{x}_t)$$ even for **stochastic** trajectories given by:<d-footnote>
+So far, we’ve discussed controlling log-density in deterministic settings. However, stochastic sampling introduces additional challenges and opportunities. In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we show that, somewhat surprisingly, we can achieve the desired **smooth** evolution of log-density $$d \log p_t(\mathbf{x}_t)=b_t(\mathbf{x}_t)dt$$ even for **stochastic** trajectories given by:<d-footnote>
 Technically, projecting out the score direction also introduces a small extra drift term. Empirically, this term is negligible, so we omit it in experiments. See <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite> for details.
 </d-footnote>
 
@@ -372,6 +372,8 @@ Our method ensures that the log-density evolution remains consistent with the de
 </div>
 
 **Take-home:** *Stochastic Density Guidance = same rescaled score approach, plus a projected noise term that preserves the intended log-density schedule.*
+
+---
 
 An interesting observation <d-cite key="song2021scorebased"></d-cite> is that simply rescaling the latent code (e.g., scaling the noise at the start of the sampling process) changes the amount of detail in the generated image. In <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we provide a theoretical explanation for this phenomenon using a concept we call Score Alignment, which directly ties the scaling of the latent code to changes in log-density.
 
