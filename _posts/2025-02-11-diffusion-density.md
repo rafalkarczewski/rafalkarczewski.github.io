@@ -180,6 +180,11 @@ Diffusion models generate samples by reversing the forward noising process, whic
 
 While deterministic sampling is often preferred for efficiency, stochastic sampling can enhance diversity by producing multiple possible reconstructions of the same noisy input.
 
+<div class='l-body'>
+<img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/video/deterministic_vs_stochastic.gif">
+<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Deterministic vs Stochastic sampling.</figcaption>
+</div>
+
 ### **2. Original vs Modified Dynamics**
 
 Sampling with PF-ODE or the Reverse SDE ensures that each intermediate sample $$\mathbf{x}_t$$ correctly follows the correct distribution $$p_t$$ at every time step. We call this sampling with **"original" dynamics**.
