@@ -208,16 +208,17 @@ We define:
 <figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Left: The "original" PF-ODE dynamics, where the trajectory follows the vector field. Right: an example of "modified" dynamics, where a trajectory visibly crosses the vector field to bias samples toward higher-likelihood regions.</figcaption>
 </div>
 
-Previously, log-density estimation was only available for **deterministic sampling under original dynamics**—i.e., along PF-ODE trajectories <d-cite key="chen2018neural"></d-cite>.
+Previously, $$ d \log p_t(\mathbf{x}_t) $$ was only known for **deterministic sampling under original dynamics**—i.e., along PF-ODE trajectories <d-cite key="chen2018neural"></d-cite>.
 
-In <d-cite key="karczewski2025diffusion"></d-cite>, we extend log-density estimation in two ways:
+In <d-cite key="karczewski2025diffusion"></d-cite>, we provide formulas <d-footnote> The same two formulas were simultaneously and independently discovered by <d-cite key="skreta2025the"></d-cite></d-footnote>
+for $$ d \log p_t(\mathbf{x}_t) $$ for:
 
 1. **Stochastic Sampling with Original Dynamics:** We derive how log-density evolves along **stochastic Reverse SDE trajectories**. <d-footnote> Interestingly, we prove that, in contrast to the deterministic case, replacing the true score function \( \nabla \log p_t(\mathbf{x}) \) with an estimate \( \mathbf{s}_\theta (\mathbf{x}, t) \) makes the log-density estimation biased. This bias is given by the estimation error of the score function.</d-footnote>
 2. **Deterministic Sampling with Modified Dynamics:** We show how log-density can be estimated not just for PF-ODE trajectories but for **any deterministic trajectory**.
 
-Finally, in <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we generalize this further:
+Finally, in <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite>, we generalize this further to:
 
-3. **Stochastic Sampling with Modified Dynamics:** We prove that log-density can be estimated for **any stochastic trajectory**, not just those following the Reverse SDE. This establishes a completely general framework for log-density estimation under any sampling procedure.
+3. **Stochastic Sampling with Modified Dynamics:** We prove that $$ d \log p_t(\mathbf{x}_t) $$ can be estimated for **any stochastic trajectory**, not just those following the Reverse SDE. This establishes a completely general framework for log-density estimation under any sampling procedure.
 
 The following table summarizes these advancements:
 
@@ -226,7 +227,7 @@ The following table summarizes these advancements:
 | **Deterministic** | Prior work <d-cite key="chen2018neural"></d-cite> | Ours <d-cite key="karczewski2025diffusion"></d-cite> |
 | **Stochastic**    | Ours <d-cite key="karczewski2025diffusion"></d-cite> | Ours <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite> |
 
-Since stochastic trajectories generalize deterministic ones, our final result in <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite> provides the most general formula for how $$\log p_t(\mathbf{x}_t)$$ evolves along **any sampling trajectory**, given by:
+Since stochastic trajectories generalize deterministic ones, our final result in <d-cite key="karczewski2025devildetailsdensityguidance"></d-cite> provides the most general formula for $$d \log p_t(\mathbf{x}_t)$$ along **any sampling trajectory**, given by:
 
 $$
 \begin{equation}
