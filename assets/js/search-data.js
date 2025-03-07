@@ -371,8 +371,8 @@ ninja.data = [{
           window.location.href = "/blog/2015/formatting-and-links/";
         
       },
-    },{id: "news-accepted-the-offer-from-meta-for-a-research-scientist-intern-this-summer",
-          title: 'Accepted the offer from Meta for a Research Scientist Intern this summer!',
+    },{id: "news-accepted-an-offer-from-meta-as-a-research-scientist-intern-on-the-ai-core-machine-learning-team-in-new-york-city-this-summer",
+          title: 'Accepted an offer from Meta as a Research Scientist Intern on the AI...',
           description: "",
           section: "News",},{id: "news-starting-my-research-visit-at-technical-university-of-denmark-i-will-be-working-with-søren-hauberg-on-geometric-view-of-diffusion-models",
           title: 'Starting my research visit at Technical University of Denmark! I will be working...',
