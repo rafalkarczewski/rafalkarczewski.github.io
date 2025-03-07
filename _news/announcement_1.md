@@ -5,4 +5,4 @@ inline: true
 related_posts: false
 ---
 
-Accepted the offer from <a href="https://www.meta.com">Meta</a> for a Research Scientist Intern this summer!
+Accepted an offer from <a href="https://www.meta.com">Meta</a> as a Research Scientist Intern on the AI Core Machine Learning team in New York City this summer!
