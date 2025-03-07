@@ -79,7 +79,7 @@ which is also guaranteed to generate a sample $$\mathbf{x}_0 \sim p_0$$.
 
 ### Score matching
 
-Diffusion models are typically trained using a score matching objective, which seeks to approximate the score function $$\nabla \log p_t(\mathbf{x})$$ using a neural network $$ \mathbf{s}_\theta(\mathbf{x})$$:
+Diffusion models are typically trained using a score matching objective, which seeks to approximate the score function $$\nabla \log p_t(\mathbf{x})$$ using a neural network $$ \mathbf{s}_\theta(\mathbf{x}, t)$$:
 
 $$
 \begin{equation}\label{eq:sm-obj}
