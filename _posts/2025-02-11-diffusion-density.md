@@ -1,11 +1,15 @@
 ---
 layout: distill
 title: Understanding Likelihood in Diffusion Models
-date: 2025-02-11 10:25:00
+date: 2025-03-05 10:25:00
 description: A summary of our two recent articles on estimating and controlling likelihood in diffusion models.
+authors:
+  - name: Rafał Karczewski 
+    affiliations: 
+      name: Aalto University
 bibliography: blogs.bib
 related_publications: true
-hidden: true
+hidden: false
 pretty_table: true
 ---
 
