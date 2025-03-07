@@ -50,7 +50,7 @@ In this post, we dive into insights from our two recent works on diffusion model
 
 ## Diffusion Models Recap
 
-The idea of diffusion models <d-cite key="sohl2015deep,ho2020denoising,song2021scorebased"></d-cite> is to gradually transform the data distribution $$p_0$$ into pure noise $$p_T$$ (e.g. $$\mathcal{N}(0, I)$$). This is achieved via the forward noising kernel $$p_t(\mathbf{x}_t \mid \mathbf{x}_0) = \mathcal{N}(\alpha_t \mathbf{x}_0, \sigma_t^2 I)$$ with $$\alpha, \sigma$$ chosen so that all the information is lost at $$t=T$$, i.e. $$p_T(\mathbf{x}_T \mid \mathbf{x}_0) \approx p_T(\mathbf{x}_T) = \mathcal{N}(\mathbf{0}, \sigma_T^2 I)$$.
+A key mechanism in diffusion models <d-cite key="sohl2015deep,ho2020denoising,song2021scorebased"></d-cite> is gradually transforming the data distribution $$p_0$$ into pure noise $$p_T$$ (e.g. $$\mathcal{N}(0, I)$$). This is achieved via the forward noising kernel $$p_t(\mathbf{x}_t \mid \mathbf{x}_0) = \mathcal{N}(\alpha_t \mathbf{x}_0, \sigma_t^2 I)$$ with $$\alpha, \sigma$$ chosen so that all the information is lost at $$t=T$$, i.e. $$p_T(\mathbf{x}_T \mid \mathbf{x}_0) \approx p_T(\mathbf{x}_T) = \mathcal{N}(\mathbf{0}, \sigma_T^2 I)$$.
 Hence, as $$t$$ increases, $$\mathbf{x}_t$$​ becomes more `noisy', and at $$t=T$$ we reach a tractable distribution $$p_T$$.
 This process can equivalently be written as a Stochastic Differential Equation (SDE):
 
@@ -126,7 +126,7 @@ Information theory suggests that high-likelihood images should be more compressi
 <figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Likelihood measures the amount of detail in an image. Sample generated with a StableDiffusion v2.1 <d-cite key="rombach2021highresolution"></d-cite> using the High-Density sampler <d-cite key="karczewski2025diffusion"></d-cite>. </figcaption>
 </div>
 
-#### The Density Trade-Off in the Typical Set
+#### The Density Trade-Off
 
 The set of realistic images is vast. Some are high-detail, while others are low-detail, but the total number of high-detail images is significantly greater due to their higher number of degrees of freedom. Since probability density must integrate to 1, this forces the model to assign lower likelihood to high-detail images simply because there are so many of them. Consider images of: apple on a plain background versus a tree with countless variations of leaves and grass: both are realistic, but the latter has vastly more possible instances, necessitating a lower individual density per image.
 
@@ -136,7 +136,7 @@ Recent work <d-cite key="karras2024guiding"></d-cite> suggests that diffusion mo
 
 #### High-Dimensional Distributions and Mode "Paradoxes"
 
-Finally, it is important to recognize that the fact that the highest-density points lie outside the typical set is not unusual in high-dimensional probability distributions. A classic example is the standard $$D$$-dimensional Gaussian: its mode is at the origin, but as dimensionality increases, almost all samples are concentrated on a thin spherical shell at radius $$\sqrt{D}$$. Sampling close to the mode (zero vector) has an exponentially vanishing probability as $$D$$ grows <d-cite key="nalisnick2019detecting"></d-cite>. Similarly, in diffusion models, the most frequently sampled (realistic) images form a high-dimensional structure away from the peak density points.
+Finally, it is important to recognize that the fact that the highest-density points look very different from regular samples is not unusual in high-dimensional probability distributions. A classic example is the standard $$D$$-dimensional Gaussian: its mode is at the origin, but as dimensionality increases, almost all samples are concentrated on a thin spherical shell at radius $$\sqrt{D}$$. Sampling close to the mode (zero vector) has an exponentially vanishing probability as $$D$$ grows <d-cite key="nalisnick2019detecting"></d-cite>. Similarly, in diffusion models, the most frequently sampled (realistic) images form a high-dimensional structure away from the peak density points.
 
 Now that we have a better understanding of what density means in diffusion models, we will now discuss how it is actually estimated in practice.
 
@@ -364,7 +364,7 @@ If the angle is always acute (less than $$90^{\circ}$$), scaling the latent code
 
 <div class='l-body'>
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/density-guidance/sa_vis.jpg">
-<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Score Alignment is a condition that guarantees monotonic impact of scaling the latent code on the log-density of the decoded sample. It is tractable to verify in practice, even without knowing the score function. Empirically we verify that it almost always holds for diffusion models on image data. </figcaption>
+<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Score Alignment is a condition that guarantees monotonic impact of scaling the latent code on the log-density of the decoded sample. It is tractable to verify in practice, even without knowing the score function. Empirically we verify that it almost always holds for diffusion models on image data.</figcaption>
 </div>
 
 **Take-home:** *If SA holds, simply rescaling the latent noise $$\mathbf{x}_T$$ provides a quick method for increasing or decreasing the final log-density (and thus controlling image detail).*
