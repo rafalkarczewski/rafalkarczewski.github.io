@@ -252,7 +252,7 @@ $$
 $$
 
 Note that when $$b_t(\mathbf{x}) = -\operatorname{div}\mathbf{u}_t(\mathbf{x})$$, we recover the original dynamics $$\tilde{\mathbf{u}}_t = \mathbf{u}_t$$. 
-For $$$b_t(\mathbf{x}) < -\operatorname{div}\mathbf{u}_t(\mathbf{x})$$, we get a model biased towards higher values of likelihood.
+For $$b_t(\mathbf{x}) < -\operatorname{div}\mathbf{u}_t(\mathbf{x})$$, we get a model biased towards higher values of likelihood.
 In practice, this formula is most relevant to diffusion models because we already have (an approximation of) $$\nabla \log p_t(\mathbf{x})$$. 
 This is why in the following sections we assume the diffusion model with $$\mathbf{u}_t$$ given by \eqref{eq:pf-ode}.
 The same framework can be used for any continuous-time flow model, provided that the score function is known.
