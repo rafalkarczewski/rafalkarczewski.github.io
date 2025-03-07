@@ -241,9 +241,9 @@ d \mathbf{x}_t = \mathbf{u}_t(\mathbf{x}_t)dt + G_t(\mathbf{x}_t)d\overline{W}_t
 $$
 
 Note that
-* For $$\mathbf{u}_t(\mathbf{x})=f(t)\mathbf{x} - g^2(t)\nabla \log p_t(\mathbf{x})$$ and $$G_t(\mathbf{x}) = g(t)I$$, we get the Reverse SDE \eqref{eq:rev-sde},
-* For $$\mathbf{u}_t(\mathbf{x})=f(t)\mathbf{x} - \frac{1}{2}g^2(t)\nabla \log p_t(\mathbf{x})$$ and $$G_t(\mathbf{x})=\mathbf{0}$$, we get the PF-ODE \eqref{eq:pf-ode}
-* For $$\mathbf{u}_t(\mathbf{x})=f(t)\mathbf{x} - \frac{1}{2}g^2(t) \eta \nabla \log p_t(\mathbf{x})$$ and $$G_t(\mathbf{x})=\mathbf{0}$$, we get a new ODE, which is biased towards higher or lower values of log-density, depending on the value of $$\eta$$.
+* For $$\mathbf{u}_t(\mathbf{x})=f(t)\mathbf{x} - g^2(t)\nabla \log p_t(\mathbf{x}),\: G_t(\mathbf{x}) = g(t)I$$, we get the Reverse SDE \eqref{eq:rev-sde},
+* For $$\mathbf{u}_t(\mathbf{x})=f(t)\mathbf{x} - \frac{1}{2}g^2(t)\nabla \log p_t(\mathbf{x}),\:G_t(\mathbf{x})=\mathbf{0}$$, we get the PF-ODE \eqref{eq:pf-ode},
+* For $$\mathbf{u}_t(\mathbf{x})=f(t)\mathbf{x} - \frac{1}{2}g^2(t) \eta \nabla \log p_t(\mathbf{x}),\:G_t(\mathbf{x})=\mathbf{0}$$, we get a new ODE, which is biased towards higher or lower values of log-density, depending on the value of $$\eta$$.
 
 In the next section, we show how this ability to estimate log-density under any dynamics enables us to **actively control it**, allowing for precise manipulation of image detail in diffusion models.
 
