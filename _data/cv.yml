@@ -3,7 +3,7 @@
   contents:
     - title: Ph.D. in Computer Science
       institution: Aalto University, Finland
-      year: 08/2022 - 08/2026
+      year: 08/2022 - 02/2026
       description:
         - Advised by <a href="https://www.mit.edu/~vgarg/">Vikas Garg</a>, <a href="https://users.aalto.fi/~heinom10/">Markus Heinonen</a>, and  <a href="https://kaski-lab.com/">Samuel Kaski</a>.
         - Working primarily on generative models, with applications to drug design.
@@ -19,10 +19,12 @@
   type: time_table
   contents:
     - title: Research Scientist Intern
-      institution: Meta, New York City
-      year: 07/2025 - 11/2025
+      institution: Meta FAIR, New York City
+      year: 07/2025 - 02/2026
+      description:
+        - Working on discrete generative models.
 
-    - title: Visiting Ph.D. Student
+    - title: Visiting Researcher
       institution: Technical University of Denmark
       year: 02/2025 - 04/2025
       description:
