@@ -24,10 +24,14 @@ latest_posts:
   limit: 3 # leave blank to include all the blog posts
 ---
 
-I am a 3rd year Ph.D. student at [Aalto University](https://www.aalto.fi) advised by <a href="https://www.mit.edu/~vgarg/">Vikas Garg</a>, <a href="https://users.aalto.fi/~heinom10/">Markus Heinonen</a>, and  <a href="https://kaski-lab.com/">Samuel Kaski</a>.
-Previously, I obtained my MSc and BSc in mathematics at the [Warsaw University of Technology](https://ww2.mini.pw.edu.pl/) and I worked for 6 years in the industry, including 2.5 years as a Machine Learning Scientist at [Amazon](https://amazon.com) in Scotland.
-Click [here](https://rafalkarczewski.github.io/cv/) to see my full CV.
+I am a final year Ph.D. candidate at [Aalto University](https://www.aalto.fi) advised by <a href="https://www.mit.edu/~vgarg/">Vikas Garg</a>, <a href="https://users.aalto.fi/~heinom10/">Markus Heinonen</a>, and  <a href="https://kaski-lab.com/">Samuel Kaski</a>.
+
+Most recently, I spent 6 months as a Research Scientist intern at [Meta FAIR](https://ai.meta.com/research/), where I worked on large-scale language and image models.
+Before my PhD, I spent six years in industry, including 2.5 years as a Machine Learning Scientist at [Amazon](https://amazon.com).
+I hold both an MSc and BSc in Mathematics from the [Warsaw University of Technology](https://ww2.mini.pw.edu.pl/).
+See my [full CV](https://rafalkarczewski.github.io/cv/).
 
 My research interests include:
-* generative models: mainly flow-based and SDE models.
-* differential geometry in machine learning.
+* **Generative AI:** Scalable flow-based and diffusion models.
+* **Geometric DL:** Differential geometry and equivariant architectures.
+* **AI4Science:** ML for physical and biological systems.
