@@ -100,7 +100,7 @@ Both require the score function $$\nabla \log p_t(\mathbf{x})$$, which is approx
 
 Armed with the pullback metric and a deterministic PF-ODE decoder $$\mathbf{x}_T \mapsto \mathbf{x}_0(\mathbf{x}_T)$$, one might hope to get nice curved geodesics between images, as in VAEs. Unfortunately, this does not work.
 
-**Theorem.** *All pullback geodesics in diffusion models decode to straight lines in data space.*
+**Theorem.** *Pullback geodesics in diffusion models decode to straight lines in data space.*
 
 Why? The pullback energy of a latent curve $$\gamma$$ only depends on the decoded curve (see the proof in <d-cite key="karczewski2025spacetime"></d-cite>):
 
@@ -126,7 +126,7 @@ $$
 \mathbf{z} = (\mathbf{x}_t, t) \in \mathbb{R}^D \times (0, T],
 $$
 
-pairing a noisy sample with its noise level. For $$D$$-dimensional data, this yields a $$(D+1)$$-dimensional spacetime. Clean data $$\mathbf{x}$$ lives at $$(\mathbf{x}, 0)$$.
+pairing a noisy sample with its noise level. For $$D$$-dimensional data, this yields a $$(D+1)$$-dimensional spacetime. Clean data $$\mathbf{x}$$ lives at $$(\mathbf{x}, 0)$$, the boundary of the spacetime.
 
 ### What is the Decoder?
 
@@ -152,7 +152,7 @@ In other words, a geodesic in this metric is the path that minimizes the *total 
 
 Usually, computing geodesics under the Fisher-Rao metric is only tractable for simple parametric families (e.g., Gaussians). The denoising distributions in diffusion models are complex, high-dimensional, and non-Gaussian. So how can we make this work?
 
-The key insight is that the denoising distributions form an **exponential family**. Despite being complicated, $$p(\mathbf{x}_0 \mid \mathbf{x}_t)$$ can always be written as<d-footnote>This follows from Bayes' rule and the Gaussian form of the forward kernel. The data distribution $$q(\mathbf{x}_0)$$ plays the role of the base measure, and the Gaussian forward kernel contributes the exponential interaction term.</d-footnote>
+The key insight is that the denoising distributions form an **exponential family**. Despite being complicated, $$p(\mathbf{x}_0 \mid \mathbf{x}_t)$$ can always be written as<d-footnote>This follows from Bayes' rule and the Gaussian form of the forward kernel. The data distribution \( q(\mathbf{x}_0) \) plays the role of the base measure, and the Gaussian forward kernel contributes the exponential interaction term.</d-footnote>
 
 $$
 p(\mathbf{x}_0 \mid \mathbf{z}) = q(\mathbf{x}_0) \exp\left(\boldsymbol{\eta}(\mathbf{z})^\top T(\mathbf{x}_0) - \psi(\mathbf{z})\right),
@@ -180,7 +180,7 @@ $$
 \text{DiffED}(\mathbf{x}^a, \mathbf{x}^b) = \ell(\gamma),
 $$
 
-where $$\gamma$$ is the spacetime geodesic connecting $$(\mathbf{x}^a, 0)$$ and $$(\mathbf{x}^b, 0)$$.<d-footnote>In practice, we anchor the endpoints at a small $$t_{\min} > 0$$ rather than exactly at 0, because at $$t = 0$$ the denoising distributions collapse to Dirac deltas, making the Fisher-Rao distance infinite.</d-footnote>
+where $$\gamma$$ is the spacetime geodesic connecting $$(\mathbf{x}^a, 0)$$ and $$(\mathbf{x}^b, 0)$$.<d-footnote>In practice, we anchor the endpoints at a small \(t_{\min} > 0 \) rather than exactly at 0, because at \( t = 0 \) the denoising distributions collapse to Dirac deltas, making the Fisher-Rao distance infinite.</d-footnote>
 
 The interpretation is intuitive: a spacetime geodesic links two clean data points through intermediate noisy states. It traces the *minimal sequence of edits*: add just enough noise to forget information specific to $$\mathbf{x}^a$$, then denoise to introduce information specific to $$\mathbf{x}^b$$. The path length quantifies the total "edit cost", measured by how much the denoising distribution changes along the way. As endpoint similarity decreases, the geodesic passes through noisier intermediate states—the model needs to "forget" more before it can "reconstruct" the target.
 
@@ -189,7 +189,7 @@ The interpretation is intuitive: a spacetime geodesic links two clean data point
 <figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Spacetime geodesics between images. Each row shows a geodesic between two clean images. The path passes through noisy intermediate states: more noise is needed when the endpoints are more dissimilar. </figcaption>
 </div>
 
-We evaluated DiffED on ImageNet images using the pretrained EDM2 model <d-cite key="karras2024analyzing"></d-cite>. Interestingly, DiffED has only weak correlation (-7%) with the perceptual similarity metric LPIPS <d-cite key="zhang2018unreasonable"></d-cite>, but correlates at 53% with the structural similarity index SSIM <d-cite key="wang2004image"></d-cite>. This suggests that DiffED captures a notion of "structural edit cost" that is distinct from perceptual similarity—it measures how much the generative model needs to change its beliefs, rather than how similar the images look to a human.
+We evaluated DiffED on ImageNet images using the pretrained EDM2 model <d-cite key="karras2024analyzing"></d-cite>. Interestingly, DiffED has only weak correlation (-7%) with the perceptual similarity metric LPIPS <d-cite key="zhang2018unreasonable"></d-cite>, but correlates at 53% with the structural similarity index SSIM <d-cite key="wang2004image"></d-cite>. This suggests that DiffED captures a notion of "structural edit cost" that is distinct from perceptual similarity - it measures how much the generative model needs to change its beliefs, rather than how similar the images look to a human.
 
 **Take-home:** *DiffED measures the minimal "noise-and-denoise" editing cost between two data points, as determined by the diffusion model's own learned structure.*
 
@@ -203,7 +203,7 @@ $$
 p(\mathbf{x}_0 \mid \mathbf{x}_t) \propto \exp\left(-U(\mathbf{x}_0 \mid \mathbf{x}_t)\right), \qquad U(\mathbf{x}_0 \mid \mathbf{x}_t) = U(\mathbf{x}_0) + \tfrac{1}{2}\text{SNR}(t)\|\mathbf{x}_0 - \mathbf{x}_t/\alpha_t\|^2,
 $$
 
-where $$\text{SNR}(t) = \alpha_t^2 / \sigma_t^2$$. This conditional energy combines the true potential with a quadratic bias toward $$\mathbf{x}_t / \alpha_t$$ - at low noise (high SNR), the distribution is concentrated near the latent; at high noise (low SNR), it approaches the unconditional Boltzmann.
+where $$\text{SNR}(t) = \alpha_t^2 / \sigma_t^2$$. This conditional energy combines the true potential with an additional bias toward $$\mathbf{x}_t / \alpha_t$$ - at low noise (high SNR), the distribution is concentrated near the latent; at high noise (low SNR), it approaches the unconditional Boltzmann.
 
 Our method proceeds in two steps:
 
@@ -249,6 +249,6 @@ Both variants are demonstrated in <d-cite key="karczewski2025spacetime"></d-cite
 
 ## Conclusion
 
-We presented a geometric perspective on the latent space of diffusion models. The standard pullback approach provably collapses, always producing straight-line interpolations in data space. By switching to a stochastic view and introducing the latent spacetime $$(\mathbf{x}_t, t)$$ equipped with the Fisher-Rao metric, we recover a rich and tractable geometric structure. The key theoretical insight—that denoising distributions form an exponential family—makes geodesic computation practical even for high-dimensional image models.
+We presented a geometric perspective on the latent space of diffusion models. The standard pullback approach provably collapses, always producing straight-line interpolations in data space. By switching to a stochastic view and introducing the latent spacetime $$(\mathbf{x}_t, t)$$ equipped with the Fisher-Rao metric, we recover a rich and tractable geometric structure. The key theoretical insight, that denoising distributions form an exponential family, makes geodesic computation practical even for high-dimensional image models.
 
 The resulting framework yields two concrete applications: a Diffusion Edit Distance that measures the minimal noise-and-denoise editing cost between data points, and a transition path sampling method that outperforms specialized baselines in molecular simulations. We believe this geometric perspective opens up further directions, including improved sampling strategies and extensions to discrete or Riemannian diffusion models.
