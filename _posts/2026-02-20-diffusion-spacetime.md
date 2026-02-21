@@ -46,38 +46,39 @@ Latent generative models - VAEs, GANs, diffusion models - all share a common str
 
 In this post, we summarize our recent work <d-cite key="karczewski2025spacetime"></d-cite>, where we investigate the geometry of diffusion model latent spaces. We first show an interesting negative result: the standard "pullback" approach, which works well for VAEs, **provably collapses** in diffusion models, i.e. all shortest paths decode to straight lines. We then introduce a fix: by switching to a *stochastic* view and treating the (state, time) pair as a point in a *latent spacetime*, we recover a rich geometric structure using information geometry. The resulting shortest paths, *spacetime geodesics*, trace minimal sequences of noise-and-denoise edits between data points. We demonstrate two applications: a principled **Diffusion Edit Distance** between images, and **transition path sampling** in molecular systems.
 
-<div class='l-body'>
-<img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/video/curve_with_density_cropped.gif">
+<div class='l-body' style="text-align: center;">
+<img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/video/curve_with_density_cropped.gif" style="display: block; margin: 0 auto;">
 <figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> A geodesic in spacetime is the shortest path between denoising distributions. As we traverse the curve, the denoising posterior smoothly transitions from one data point to another.</figcaption>
 </div>
 
 ## Shortest Paths in Latent Spaces
 
-Before diving into diffusion models, let's see why geometry matters for latent spaces. Given a latent space $$\mathcal{Z}$$ and a decoder $$f: \mathcal{Z} \to \mathcal{X}$$, we often want to interpolate between two latent codes $$\mathbf{z}^a$$ and $$\mathbf{z}^b$$. The simplest approach is linear interpolation - a straight line in $$\mathcal{Z}$$. But straight lines in latent space don't generally map to "realistic" paths in data space. They can cut through low-density regions, producing unrealistic intermediate samples.
+Before diving into diffusion models, let's see why geometry matters for latent spaces. Given a latent space $$\mathcal{Z}$$ and a decoder $$f: \mathcal{Z} \to \mathcal{X}$$, we often want to interpolate between two latent codes $$\mathbf{z}^a$$ and $$\mathbf{z}^b$$. The simplest approach is linear interpolation - a straight line in $$\mathcal{Z}$$. But straight lines in latent space don't generally map to "realistic" paths in data space. They tend to pass through *atypical* regions of the distribution, producing unrealistic intermediate samples.<d-footnote>A common intuition is that straight-line interpolations fail because they cut through *low*-density regions. The reality is more subtle. For instance, with a Gaussian prior, straight lines pass through the *center* — a high-density region. But high density does not mean typical: in high dimensions, the mode of a distribution can be far from where samples actually concentrate. We explore this phenomenon in detail in a <a href="{{ site.baseurl }}/blog/2025/diffusion-density/">companion blog post</a> <d-cite key="karczewski2025diffusion"></d-cite>, where we show that the highest-density regions of diffusion models correspond to blurry, cartoon-like images rather than realistic data.</d-footnote>
 
-The solution is to equip $$\mathcal{Z}$$ with a Riemannian metric $$G(\mathbf{z})$$ that captures the structure of the data. With this metric, the "shortest path" is no longer a straight line, but a *geodesic* - a curve $$\gamma$$ minimizing the Riemannian length
+The solution is to define a notion of *infinitesimal distance* in $$\mathcal{Z}$$ that captures the structure of the data. Given a way to measure the "cost" $$d(\mathbf{z}, \mathbf{z} + d\mathbf{z})$$ of an infinitesimal step, the "shortest path" is no longer a straight line, but a *geodesic* — a curve that minimizes the total cost of traversal. Different choices of infinitesimal distance lead to different geodesics, and hence different notions of what it means to interpolate between two latent codes.
 
-$$
-\ell(\gamma) = \int_0^1 \sqrt{\dot{\gamma}_s^\top G(\gamma_s) \dot{\gamma}_s} \, ds.
-$$
+<div class='l-body' style="text-align: center;">
+<img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/spacetime/latent_geometry.png" style="display: block; margin: 0 auto;">
+<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Different choices of infinitesimal distance lead to different geodesics between the same endpoints.</figcaption>
+</div>
 
-In practice, we minimize the equivalent *energy* functional $$\mathcal{E}(\gamma) = \frac{1}{2}\int_0^1 \dot{\gamma}_s^\top G(\gamma_s) \dot{\gamma}_s \, ds$$, which has the same minimizers but is easier to optimize. For a discretized curve $$\gamma = (\mathbf{z}_0, \ldots, \mathbf{z}_N)$$, this becomes
+For a discretized curve $$\gamma = (\mathbf{z}_0, \ldots, \mathbf{z}_N)$$, finding the geodesic amounts to minimizing the *energy*
 
 $$
 \mathcal{E}(\gamma) \approx \frac{N}{2} \sum_{i=0}^{N-1} d^2(\mathbf{z}_i, \mathbf{z}_{i+1}),
 $$
 
-where $$d$$ is a local distance induced by $$G$$. Now the key question is: what metric $$G$$ should we use?
+where $$d$$ is the local infinitesimal distance. The key question is: how should we define $$d$$?
 
 ### Pullback Geometry
 
-A natural choice, well-studied in the context of VAEs <d-cite key="arvanitidis2018latent,arvanitidis2022pulling"></d-cite>, is the *pullback metric*. Suppose we have a deterministic decoder $$f: \mathcal{Z} \to \mathcal{X}$$. The pullback metric measures how an infinitesimal step in latent space changes the decoded output:
+A natural choice, well-studied in the context of VAEs <d-cite key="arvanitidis2018latent,arvanitidis2022pulling"></d-cite>, is the *pullback metric*. Suppose we have a deterministic decoder $$f: \mathcal{Z} \to \mathcal{X}$$. The pullback metric defines the infinitesimal distance between nearby latent codes as the Euclidean distance between their decoded outputs:
 
 $$
-G_{\text{PB}}(\mathbf{z}) = \left(\frac{\partial f}{\partial \mathbf{z}}\right)^\top \left(\frac{\partial f}{\partial \mathbf{z}}\right).
+d(\mathbf{z}, \mathbf{z} + d\mathbf{z}) = \|f(\mathbf{z}) - f(\mathbf{z} + d\mathbf{z})\|.
 $$
 
-In other words, the local distance between nearby latent codes is $$d(\mathbf{z}_1, \mathbf{z}_2) = \|f(\mathbf{z}_1) - f(\mathbf{z}_2)\|$$. With this metric, geodesics try to keep their decoded images as close together as possible—they follow the "surface" of the data manifold rather than cutting through empty space. This works beautifully for VAEs, where the latent space is lower-dimensional than the data space, producing more realistic interpolations than linear baselines.
+With this choice, geodesics try to keep the decoded curve as smooth as possible — they follow the "surface" of the data manifold rather than cutting through empty space. This works beautifully for VAEs, where the latent space is lower-dimensional than the data space, producing more realistic interpolations than linear baselines.
 
 ## Diffusion Models Recap
 
@@ -92,9 +93,9 @@ where $$\alpha_t, \sigma_t$$ control how quickly information is destroyed. At th
 To generate data, we reverse this process. There are two flavors:
 
 - **Deterministic** (PF-ODE): $$d\mathbf{x} = \left(f_t \mathbf{x} - \tfrac{1}{2}g_t^2 \nabla \log p_t(\mathbf{x})\right) dt$$, which defines a bijection $$\mathbf{x}_T \mapsto \mathbf{x}_0(\mathbf{x}_T)$$.
-- **Stochastic** (Reverse SDE): $$d\mathbf{x} = \left(f_t \mathbf{x} - g_t^2 \nabla \log p_t(\mathbf{x})\right) dt + g_t d\overline{W}_t$$, which defines a *distribution* $$p(\mathbf{x}_0 \mid \mathbf{x}_t)$$ for each noisy input.
+- **Stochastic** (Reverse SDE): $$d\mathbf{x} = \left(f_t \mathbf{x} - g_t^2 \nabla \log p_t(\mathbf{x})\right) dt + g_t d\overline{W}_t$$, which defines a *denoising posterior distribution* $$p(\mathbf{x}_0 \mid \mathbf{x}_t)$$ for each noisy input — the distribution over clean data consistent with the noisy observation.
 
-Both require the score function $$\nabla \log p_t(\mathbf{x})$$, which is approximated by a neural network. The deterministic decoder gives us a single clean image for each noise vector; the stochastic decoder gives a *distribution* over possible clean images.
+Both require the score function $$\nabla \log p_t(\mathbf{x})$$, which is approximated by a neural network. The deterministic decoder gives us a single clean image for each noise vector; the stochastic decoder gives an entire *denoising posterior* over possible clean images.
 
 ## Pullback Geometry Fails for Diffusion Models
 
@@ -134,19 +135,21 @@ In the spacetime view, each latent point $$\mathbf{z} = (\mathbf{x}_t, t)$$ inde
 
 ### Information Geometry
 
-How do we measure the distance between two distributions? This is where information geometry comes in. The *Fisher-Rao metric* <d-cite key="amari2016information"></d-cite> measures how much the denoising distribution changes when we perturb the latent code:
+The goal is the same as with the pullback: we want to measure how much the "decoding" changes when we take an infinitesimal step in the latent space. The difference is that the decoder now outputs a *distribution* rather than a point, so we need to replace the Euclidean distance with a measure of discrepancy between distributions. The natural choice from information geometry <d-cite key="amari2016information"></d-cite> is the KL divergence:
 
 $$
-G_{\text{IG}}(\mathbf{z}) = \mathbb{E}_{\mathbf{x}_0 \sim p(\mathbf{x}_0 \mid \mathbf{z})} \left[ \nabla_{\mathbf{z}} \log p(\mathbf{x}_0 \mid \mathbf{z}) \, \nabla_{\mathbf{z}} \log p(\mathbf{x}_0 \mid \mathbf{z})^\top \right].
+d(\mathbf{z}, \mathbf{z} + d\mathbf{z}) = \sqrt{\text{KL}\left[p(\mathbf{x}_0 \mid \mathbf{z}) \| p(\mathbf{x}_0 \mid \mathbf{z} + d\mathbf{z})\right]}.
 $$
 
-Locally, this is equivalent to measuring the KL divergence between neighboring denoising distributions:
+This is the *Fisher-Rao metric*.<d-footnote>More precisely, the KL divergence to second order is $$\text{KL}[p(\mathbf{x}_0 \mid \mathbf{z}) \| p(\mathbf{x}_0 \mid \mathbf{z} + d\mathbf{z})] = \frac{1}{2} d\mathbf{z}^\top G_{\text{IG}}(\mathbf{z}) \, d\mathbf{z} + o(\|d\mathbf{z}\|^2)$$, where $$G_{\text{IG}}(\mathbf{z}) = \mathbb{E}_{\mathbf{x}_0 \sim p(\mathbf{x}_0 \mid \mathbf{z})} \left[ \nabla_{\mathbf{z}} \log p(\mathbf{x}_0 \mid \mathbf{z}) \, \nabla_{\mathbf{z}} \log p(\mathbf{x}_0 \mid \mathbf{z})^\top \right]$$ is the Fisher information matrix.</d-footnote> To summarize, both the pullback and the Fisher-Rao metric aim to measure the same thing — how much the decoding changes — but they formulate it differently depending on the nature of the decoder:
 
-$$
-\text{KL}\left[p(\mathbf{x}_0 \mid \mathbf{z}) \| p(\mathbf{x}_0 \mid \mathbf{z} + d\mathbf{z})\right] = \frac{1}{2} d\mathbf{z}^\top G_{\text{IG}}(\mathbf{z}) \, d\mathbf{z} + o(\|d\mathbf{z}\|^2).
-$$
+|  | **Deterministic Decoder** | **Distributional Decoder** |
+|--|:--:|:--:|
+| **Decoder output** | A point $$f(\mathbf{z})$$ | A distribution $$p(\mathbf{x}_0 \mid \mathbf{z})$$ |
+| **Infinitesimal discrepancy** | $$\|f(\mathbf{z}) - f(\mathbf{z}+d\mathbf{z})\|$$ | $$\sqrt{\text{KL}[p(\cdot \mid \mathbf{z}) \| p(\cdot \mid \mathbf{z}+d\mathbf{z})]}$$ |
+| **Metric name** | Pullback | Fisher-Rao |
 
-In other words, a geodesic in this metric is the path that minimizes the *total change in denoising distribution* - exactly what we want.
+A geodesic under the Fisher-Rao metric is the path that minimizes the *total change in denoising posterior* — exactly what we want.
 
 ### Computing Geodesics in Practice
 
@@ -212,10 +215,10 @@ Our method proceeds in two steps:
 
 <div class='l-body'>
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/video/energy_landscape_viz_2.gif">
-<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> How denoising posteriors change along the spacetime geodesic in the transition path sampling example. The geodesic provides a smooth interpolation of distributions between the two low-energy states.</figcaption>
+<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> How denoising posteriors change along the spacetime geodesic in the transition path sampling example. Left: a point traversing the spacetime geodesic. Right: the corresponding denoising posterior at each point along the curve. The geodesic provides a smooth interpolation of distributions between the two low-energy states.</figcaption>
 </div>
 
-We tested this on Alanine Dipeptide, a standard benchmark in the transition path sampling literature <d-cite key="holdijk2023stochastic,du2024doob"></d-cite>. Our method achieves a MaxEnergy of $$37.66 \pm 0.61$$, very close to the numerical lower bound of $$36.42$$, and significantly better than MCMC baselines ($$42.54 \pm 7.42$$) and Doob's Lagrangian ($$66.24 \pm 1.01$$). Crucially, it requires orders of magnitude fewer energy evaluations (128K vs. 1.29B for the best MCMC variant).
+We tested this on Alanine Dipeptide, a standard benchmark in the transition path sampling literature <d-cite key="holdijk2023stochastic,du2024doob"></d-cite>. Our method achieves a MaxEnergy of $$37.36 \pm 0.60$$, very close to the numerical lower bound of $$36.42$$, and significantly better than MCMC baselines ($$42.54 \pm 7.42$$) and Doob's Lagrangian ($$66.24 \pm 1.01$$). Crucially, it requires orders of magnitude fewer energy evaluations (128K vs. 1.29B for the best MCMC variant).
 
 <div class='l-body'>
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/video/spacetime-guided-tps-2.gif">
@@ -228,7 +231,12 @@ We tested this on Alanine Dipeptide, a standard benchmark in the transition path
 | MCMC-fixed-length | 42.54 ± 7.42 | 1.29B |
 | MCMC-variable-length | 58.11 ± 18.51 | 21.02M |
 | Doob's Lagrangian <d-cite key="du2024doob"></d-cite> | 66.24 ± 1.01 | 38.4M |
-| **Spacetime geodesic (Ours)** | **37.66 ± 0.61** | **128K (+16M)** |
+| **Spacetime geodesic (Ours)** | **37.36 ± 0.60** | 16M (+16M) |
+
+<div class='l-body' style="text-align: center;">
+<img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/spacetime/tps_qual_comparison.png" style="display: block; margin: 0 auto;">
+<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> Qualitative comparison of transition paths generated by our method and baselines.</figcaption>
+</div>
 
 ### Constrained Transitions
 
