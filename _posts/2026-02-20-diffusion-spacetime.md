@@ -151,7 +151,7 @@ This is the *Fisher-Rao metric*.<d-footnote>More precisely, the KL divergence to
 |  | **Deterministic Decoder** | **Stochastic Decoder** |
 |--|:--:|:--:|
 | **Decoder output** | A point $$f(\mathbf{z})$$ | A distribution $$p(\mathbf{x}_0 \mid \mathbf{z})$$ |
-| **Infinitesimal discrepancy** | $$||f(\mathbf{z}) - f(\mathbf{z}+d\mathbf{z})||^2$$ | $$\text{KL}[p(\cdot \mid \mathbf{z}) || p(\cdot \mid \mathbf{z}+d\mathbf{z})]$$ |
+| **Infinitesimal discrepancy** | $$\|\|f(\mathbf{z}) - f(\mathbf{z}+d\mathbf{z})\|\|^2$$ | $$\text{KL}[p(\cdot \mid \mathbf{z}) \|\| p(\cdot \mid \mathbf{z}+d\mathbf{z})]$$ |
 | **Metric name** | Pullback | Fisher-Rao |
 
 A geodesic under the Fisher-Rao metric is the path that minimizes the *total change in denoising posterior* — exactly what we want.
