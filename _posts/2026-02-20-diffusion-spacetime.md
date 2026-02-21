@@ -223,7 +223,7 @@ Our method proceeds in two steps:
 <figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> How denoising posteriors change along the spacetime geodesic in the transition path sampling example. Right: a point traversing the spacetime geodesic. Left: the corresponding denoising posterior at each point along the curve. The geodesic provides a smooth interpolation of distributions between the two low-energy states.</figcaption>
 </div>
 
-We tested this on Alanine Dipeptide, a standard benchmark in the transition path sampling literature <d-cite key="holdijk2023stochastic,du2024doob"></d-cite>. Our method achieves a MaxEnergy of $$37.36 \pm 0.60$$, very close to the numerical lower bound of $$36.42$$, and significantly better than MCMC baselines ($$42.54 \pm 7.42$$) and Doob's Lagrangian ($$66.24 \pm 1.01$$). Crucially, it requires orders of magnitude fewer energy evaluations (128K vs. 1.29B for the best MCMC variant).
+We tested this on Alanine Dipeptide, a standard benchmark in the transition path sampling literature <d-cite key="holdijk2023stochastic,du2024doob"></d-cite>. Our method achieves a MaxEnergy of $$37.36 \pm 0.60$$, very close to the numerical lower bound of $$36.42$$, and significantly better than MCMC baselines ($$42.54 \pm 7.42$$) and Doob's Lagrangian ($$66.24 \pm 1.01$$). Crucially, it requires orders of magnitude fewer energy evaluations (16M vs. 1.29B for the best MCMC variant).
 
 <div class='l-body'>
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/video/spacetime-guided-tps-2.gif">
