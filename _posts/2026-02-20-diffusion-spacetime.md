@@ -26,7 +26,7 @@ pretty_table: true
     <div><a href="#pullback-geometry-fails-for-diffusion-models"> Pullback Geometry Fails for Diffusion Models </a></div>
     <div><a href="#the-spacetime-alternative"> The Spacetime Alternative </a></div>
     <ul>
-      <li><a href="#what-is-the-latent-space">What is the Latent Space?</a></li>
+      <li><a href="#what-is-the-latent-space-of-a-diffusion-model">What is the Latent Space of a Diffusion Model?</a></li>
       <li><a href="#what-is-the-decoder">What is the Decoder?</a></li>
       <li><a href="#information-geometry">Information Geometry</a></li>
       <li><a href="#computing-geodesics-in-practice">Computing Geodesics in Practice</a></li>
@@ -55,7 +55,7 @@ In this post, we summarize our recent work <d-cite key="karczewski2025spacetime"
 
 Before diving into diffusion models, let's see why geometry matters for latent spaces. Given a latent space $$\mathcal{Z}$$ and a decoder $$f: \mathcal{Z} \to \mathcal{X}$$, we often want to interpolate between two latent codes $$\mathbf{z}^a$$ and $$\mathbf{z}^b$$. The simplest approach is linear interpolation - a straight line in $$\mathcal{Z}$$. But straight lines in latent space don't generally map to "realistic" paths in data space. They tend to pass through *atypical* regions of the distribution, producing unrealistic intermediate samples.<d-footnote>A common intuition is that straight-line interpolations fail because they cut through *low*-density regions. The reality is more subtle. For instance, with a Gaussian prior, straight lines pass through the *center* — a high-density region. But high density does not mean typical: in high dimensions, the mode of a distribution can be far from where samples actually concentrate. We explore this phenomenon in detail in a <a href="{{ site.baseurl }}/blog/2025/diffusion-density/">companion blog post</a> <d-cite key="karczewski2025diffusion"></d-cite>, where we show that the highest-density regions of diffusion models correspond to blurry, cartoon-like images rather than realistic data.</d-footnote>
 
-The solution is to define a notion of *infinitesimal distance* in $$\mathcal{Z}$$ that captures the structure of the data. Given a way to measure the "cost" $$d(\mathbf{z}, \mathbf{z} + d\mathbf{z})$$ of an infinitesimal step, the "shortest path" is no longer a straight line, but a *geodesic* — a curve that minimizes the total cost of traversal. Different choices of infinitesimal distance lead to different geodesics, and hence different notions of what it means to interpolate between two latent codes.
+The solution is to define a notion of *infinitesimal distance* in $$\mathcal{Z}$$ that captures the structure of the data. Given a way to measure the "cost" $$d(\mathbf{z}, \mathbf{z} + d\mathbf{z})$$ of an infinitesimal step, the "shortest path" is no longer a straight line, but a *geodesic* - a curve that minimizes the total cost of traversal. Different choices of infinitesimal distance lead to different geodesics, and hence different notions of what it means to interpolate between two latent codes.
 
 <div class='l-body' style="text-align: center;">
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/img/spacetime/latent_geometry.png" style="display: block; margin: 0 auto;">
@@ -78,7 +78,7 @@ $$
 d(\mathbf{z}, \mathbf{z} + d\mathbf{z}) = \|f(\mathbf{z}) - f(\mathbf{z} + d\mathbf{z})\|.
 $$
 
-With this choice, geodesics try to keep the decoded curve as smooth as possible — they follow the "surface" of the data manifold rather than cutting through empty space. This works beautifully for VAEs, where the latent space is lower-dimensional than the data space, producing more realistic interpolations than linear baselines.
+With this choice, geodesics try to keep the decoded curve as smooth as possible - they follow the "surface" of the data manifold rather than cutting through empty space. This works beautifully for VAEs, where the latent space is lower-dimensional than the data space, producing more realistic interpolations than linear baselines.
 
 ## Diffusion Models Recap
 
@@ -111,13 +111,18 @@ $$
 
 The minimizer is always the constant-speed straight line $$\mathbf{x}_s = (1-s)\mathbf{x}^a + s\mathbf{x}^b$$ in data space. Since the PF-ODE is a bijection, this line has a unique latent preimage, which is therefore the pullback geodesic. The result: pullback geodesics may curve in noise space, but they always decode to straight lines in data space, completely ignoring the structure of the data manifold.
 
+<div style="text-align: center;">
+  <img src="{{ site.baseurl }}/assets/img/spacetime/pullback_straight.png" style="display: block; margin: 0 auto; max-width: 100%;" />
+  <p><em>The pullback geodesic may curve in the latent (noise) space, but its decoding is always a straight line in data space.</em></p>
+</div>
+
 The root cause is that, unlike VAEs, diffusion models have latent and data spaces of **equal dimension**. The decoder operates directly in the ambient space, and without a dimensionality bottleneck, it cannot capture intrinsic data structure through pullback alone.
 
 **Take-home:** *The standard pullback metric is fundamentally unsuitable for diffusion models. We need a different approach.*
 
 ## The Spacetime Alternative
 
-### What is the Latent Space?
+### What is the Latent Space of a Diffusion Model?
 
 In diffusion models, there are many possible choices for the "latent" representation: we could use $$\mathbf{x}_t$$ at any noise level $$t$$. But fixing a single $$t$$ is arbitrary, and at $$t = T$$ the representation is essentially meaningless, i.e. the forward process is memoryless, so $$p(\mathbf{x}_0 \mid \mathbf{x}_T) \approx q(\mathbf{x}_0)$$, independent of $$\mathbf{x}_T$$.
 
@@ -138,15 +143,15 @@ In the spacetime view, each latent point $$\mathbf{z} = (\mathbf{x}_t, t)$$ inde
 The goal is the same as with the pullback: we want to measure how much the "decoding" changes when we take an infinitesimal step in the latent space. The difference is that the decoder now outputs a *distribution* rather than a point, so we need to replace the Euclidean distance with a measure of discrepancy between distributions. The natural choice from information geometry <d-cite key="amari2016information"></d-cite> is the KL divergence:
 
 $$
-d(\mathbf{z}, \mathbf{z} + d\mathbf{z}) = \sqrt{\text{KL}\left[p(\mathbf{x}_0 \mid \mathbf{z}) \| p(\mathbf{x}_0 \mid \mathbf{z} + d\mathbf{z})\right]}.
+d^2(\mathbf{z}, \mathbf{z} + d\mathbf{z}) = \text{KL}\left[p(\mathbf{x}_0 \mid \mathbf{z}) \| p(\mathbf{x}_0 \mid \mathbf{z} + d\mathbf{z})\right].
 $$
 
 This is the *Fisher-Rao metric*.<d-footnote>More precisely, the KL divergence to second order is $$\text{KL}[p(\mathbf{x}_0 \mid \mathbf{z}) \| p(\mathbf{x}_0 \mid \mathbf{z} + d\mathbf{z})] = \frac{1}{2} d\mathbf{z}^\top G_{\text{IG}}(\mathbf{z}) \, d\mathbf{z} + o(\|d\mathbf{z}\|^2)$$, where $$G_{\text{IG}}(\mathbf{z}) = \mathbb{E}_{\mathbf{x}_0 \sim p(\mathbf{x}_0 \mid \mathbf{z})} \left[ \nabla_{\mathbf{z}} \log p(\mathbf{x}_0 \mid \mathbf{z}) \, \nabla_{\mathbf{z}} \log p(\mathbf{x}_0 \mid \mathbf{z})^\top \right]$$ is the Fisher information matrix.</d-footnote> To summarize, both the pullback and the Fisher-Rao metric aim to measure the same thing — how much the decoding changes — but they formulate it differently depending on the nature of the decoder:
 
-|  | **Deterministic Decoder** | **Distributional Decoder** |
+|  | **Deterministic Decoder** | **Stochastic Decoder** |
 |--|:--:|:--:|
 | **Decoder output** | A point $$f(\mathbf{z})$$ | A distribution $$p(\mathbf{x}_0 \mid \mathbf{z})$$ |
-| **Infinitesimal discrepancy** | $$\|f(\mathbf{z}) - f(\mathbf{z}+d\mathbf{z})\|$$ | $$\sqrt{\text{KL}[p(\cdot \mid \mathbf{z}) \| p(\cdot \mid \mathbf{z}+d\mathbf{z})]}$$ |
+| **Infinitesimal discrepancy** | $$||f(\mathbf{z}) - f(\mathbf{z}+d\mathbf{z})||^2$$ | $$\text{KL}[p(\cdot \mid \mathbf{z}) || p(\cdot \mid \mathbf{z}+d\mathbf{z})]$$ |
 | **Metric name** | Pullback | Fisher-Rao |
 
 A geodesic under the Fisher-Rao metric is the path that minimizes the *total change in denoising posterior* — exactly what we want.
@@ -215,7 +220,7 @@ Our method proceeds in two steps:
 
 <div class='l-body'>
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/video/energy_landscape_viz_2.gif">
-<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> How denoising posteriors change along the spacetime geodesic in the transition path sampling example. Left: a point traversing the spacetime geodesic. Right: the corresponding denoising posterior at each point along the curve. The geodesic provides a smooth interpolation of distributions between the two low-energy states.</figcaption>
+<figcaption class="figcaption" style="text-align: center; margin-top: 10px; margin-bottom: 10px;"> How denoising posteriors change along the spacetime geodesic in the transition path sampling example. Right: a point traversing the spacetime geodesic. Left: the corresponding denoising posterior at each point along the curve. The geodesic provides a smooth interpolation of distributions between the two low-energy states.</figcaption>
 </div>
 
 We tested this on Alanine Dipeptide, a standard benchmark in the transition path sampling literature <d-cite key="holdijk2023stochastic,du2024doob"></d-cite>. Our method achieves a MaxEnergy of $$37.36 \pm 0.60$$, very close to the numerical lower bound of $$36.42$$, and significantly better than MCMC baselines ($$42.54 \pm 7.42$$) and Doob's Lagrangian ($$66.24 \pm 1.01$$). Crucially, it requires orders of magnitude fewer energy evaluations (128K vs. 1.29B for the best MCMC variant).
