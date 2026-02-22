@@ -30,7 +30,18 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/cv/";
           },
-        },{id: "post-understanding-likelihood-in-diffusion-models",
+        },{id: "post-the-spacetime-geometry-of-diffusion-models",
+      
+        title: "The Spacetime Geometry of Diffusion Models",
+      
+      description: "A summary of our work on defining a geometric structure on the latent space of diffusion models using information geometry.",
+      section: "Posts",
+      handler: () => {
+        
+          window.location.href = "/blog/2026/diffusion-spacetime/";
+        
+      },
+    },{id: "post-understanding-likelihood-in-diffusion-models",
       
         title: "Understanding Likelihood in Diffusion Models",
       
