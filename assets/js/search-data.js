@@ -34,7 +34,7 @@ ninja.data = [{
       
         title: "The Spacetime Geometry of Diffusion Models",
       
-      description: "A summary of our work on defining a geometric structure on the latent space of diffusion models using information geometry.",
+      description: "A summary of our ICLR 2026 Oral paper on defining a geometric structure on the latent space of diffusion models using information geometry.",
       section: "Posts",
       handler: () => {
         
