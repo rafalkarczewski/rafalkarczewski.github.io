@@ -2,7 +2,7 @@
 layout: distill
 title: The Spacetime Geometry of Diffusion Models
 date: 2026-02-10 10:25:00
-description: A summary of our <a href="https://openreview.net/forum?id=qCsbYJZRA5">ICLR 2026 Oral paper</a> on defining a geometric structure on the latent space of diffusion models using information geometry.
+description: A summary of our ICLR 2026 Oral paper on defining a geometric structure on the latent space of diffusion models using information geometry.
 authors:
   - name: Rafał Karczewski 
     affiliations: 
@@ -44,7 +44,7 @@ pretty_table: true
 
 Latent generative models, VAEs, GANs, diffusion models, all share a common structure: a latent space and a decoder that maps latent codes to data. In VAEs and GANs, the latent space is typically lower-dimensional than the data, and it has long been understood that equipping it with the right geometry leads to more meaningful distances and more realistic interpolations <d-cite key="arvanitidis2018latent,arvanitidis2022pulling"></d-cite>. But what about diffusion models, where the latent and data spaces share the same dimension?
 
-In this post, we summarize our recent work <d-cite key="karczewski2025spacetime"></d-cite>, where we investigate the geometry of diffusion latent spaces. We first show an interesting negative result: the standard "pullback" approach, which works well for VAEs, **provably collapses** in diffusion models, i.e. all shortest paths decode to straight lines. We then introduce a fix: by switching to a *stochastic* view and treating the (state, time) pair as a point in a *latent spacetime*, we recover a rich geometric structure using information geometry. The resulting shortest paths, *spacetime geodesics*, trace minimal sequences of noise-and-denoise edits between data points. We demonstrate two applications: a principled **Diffusion Edit Distance** between images, and **transition path sampling** in molecular systems.
+In this post, we summarize our <a href="https://openreview.net/forum?id=qCsbYJZRA5">ICLR 2026 Oral paper</a>, where we investigate the geometry of diffusion latent spaces. We first show an interesting negative result: the standard "pullback" approach, which works well for VAEs, **provably collapses** in diffusion models, i.e. all shortest paths decode to straight lines. We then introduce a fix: by switching to a *stochastic* view and treating the (state, time) pair as a point in a *latent spacetime*, we recover a rich geometric structure using information geometry. The resulting shortest paths, *spacetime geodesics*, trace minimal sequences of noise-and-denoise edits between data points. We demonstrate two applications: a principled **Diffusion Edit Distance** between images, and **transition path sampling** in molecular systems.
 
 <div class='l-body' style="text-align: center;">
 <img class="img-fluid rounded z-depth-1" src="{{ site.baseurl }}/assets/video/curve_with_density_cropped.gif" style="display: block; margin: 0 auto;">
