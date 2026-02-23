@@ -124,7 +124,7 @@ The root cause is that, unlike VAEs, diffusion models have latent and data space
 
 ### What is the Latent Space of a Diffusion Model?
 
-In diffusion models, there are many possible choices for the "latent" representation: we could use $$\mathbf{x}_t$$ at any noise level $$t$$. But fixing a single $$t$$ is arbitrary, and at $$t = T$$ the representation is essentially meaningless, i.e. the forward process is memoryless, so $$p(\mathbf{x}_0 \mid \mathbf{x}_T) \approx q(\mathbf{x}_0)$$, independent of $$\mathbf{x}_T$$.
+In diffusion models, there are many possible choices for the "latent" representation: we could use $$\mathbf{x}_t$$ at any noise level $$t$$. But fixing a single $$t$$ is arbitrary, and at $$t = T$$ the representation is essentially meaningless, i.e. the forward process is memoryless, so the posterior $$p(\mathbf{x}_0 \mid \mathbf{x}_T) \approx q(\mathbf{x}_0)$$, is independent of $$\mathbf{x}_T$$.
 
 Instead, we propose to consider all noise levels simultaneously. A point in our latent space is a *spacetime* coordinate
 
