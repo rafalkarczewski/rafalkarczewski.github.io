@@ -2,7 +2,7 @@
 layout: distill
 title: The Spacetime Geometry of Diffusion Models
 date: 2026-02-10 10:25:00
-description: A summary of our work on defining a geometric structure on the latent space of diffusion models using information geometry.
+description: A summary of our <a href="https://openreview.net/forum?id=qCsbYJZRA5">ICLR 2026 Oral paper</a> on defining a geometric structure on the latent space of diffusion models using information geometry.
 authors:
   - name: Rafał Karczewski 
     affiliations: 
