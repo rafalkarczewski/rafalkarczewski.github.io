@@ -90,7 +90,7 @@ $$
 
 where $$\alpha_t, \sigma_t$$ control how quickly information is destroyed. At the final time $$T$$, we reach approximately pure noise: $$p_T \approx \mathcal{N}(0, \sigma_T^2 I)$$.
 
-To generate data, we reverse this process. There are two approaches:
+To generate data, we reverse this process. There are two approaches<d-footnote>\(f_t = \frac{d \log \alpha_t}{dt}\), \(g_t^2 = \sigma_t^2 * -\frac{d \lambda_t}{dt}\), where \( \lambda_t = \log \frac{\alpha_t^2}{\sigma_t^2} \) is the logSNR.</d-footnote>:
 
 - **Deterministic** (PF-ODE): $$d\mathbf{x} = \left(f_t \mathbf{x} - \tfrac{1}{2}g_t^2 \nabla \log p_t(\mathbf{x})\right) dt$$, which defines a bijection $$\mathbf{x}_T \mapsto \mathbf{x}_0(\mathbf{x}_T)$$.
 - **Stochastic** (Reverse SDE): $$d\mathbf{x} = \left(f_t \mathbf{x} - g_t^2 \nabla \log p_t(\mathbf{x})\right) dt + g_t d\overline{W}_t$$, which defines a *denoising posterior distribution* $$p(\mathbf{x}_0 \mid \mathbf{x}_t)$$ for each noisy input - the distribution over clean data consistent with the noisy observation.
